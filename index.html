@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>bading ka</title>
+<style>
+  :root {
+    --bg-1: #ff6fa5;
+    --bg-2: #7b5bff;
+    --bg-3: #ffd54f;
+    --card: #fffaf3;
+    --ink: #2b1d3f;
+    --accent: #ff3d81;
+    --accent-2: #5b3bff;
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    font-family: 'Poppins', 'Segoe UI', sans-serif;
+  }
+
+  body {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, var(--bg-1), var(--bg-2) 60%, var(--bg-3));
+    background-size: 200% 200%;
+    animation: drift 12s ease-in-out infinite;
+    overflow: hidden;
+    position: relative;
+  }
+
+  @keyframes drift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+
+  .confetti {
+    position: fixed;
+    top: -10px;
+    border-radius: 2px;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .card {
+    position: relative;
+    z-index: 2;
+    background: var(--card);
+    border-radius: 28px;
+    padding: 48px 40px;
+    width: min(420px, 90vw);
+    text-align: center;
+    box-shadow: 0 30px 60px rgba(43, 29, 63, 0.35);
+    border: 4px solid rgba(255,255,255,0.6);
+  }
+
+  .view { display: none; }
+  .view.active { display: block; animation: pop-in 0.5s cubic-bezier(.2,1.4,.4,1) both; }
+
+  @keyframes pop-in {
+    0% { opacity: 0; transform: scale(0.85) translateY(20px); }
+    100% { opacity: 1; transform: scale(1) translateY(0); }
+  }
+
+  .eyebrow {
+    display: inline-block;
+    font-size: 12px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--accent-2);
+    font-weight: 700;
+    margin-bottom: 10px;
+  }
+
+  h1 {
+    font-size: 26px;
+    margin: 0 0 8px;
+    color: var(--ink);
+    font-weight: 800;
+  }
+
+  p.sub {
+    margin: 0 0 26px;
+    color: #6b5f80;
+    font-size: 14.5px;
+    line-height: 1.5;
+  }
+
+  input[type="text"] {
+    width: 100%;
+    padding: 14px 16px;
+    border-radius: 14px;
+    border: 2px solid #ecdcff;
+    font-size: 16px;
+    outline: none;
+    background: #fbf5ff;
+    color: var(--ink);
+    transition: border-color 0.2s, transform 0.2s;
+  }
+
+  input[type="text"]:focus {
+    border-color: var(--accent-2);
+    transform: translateY(-1px);
+  }
+
+  button {
+    margin-top: 18px;
+    width: 100%;
+    padding: 14px;
+    border: none;
+    border-radius: 14px;
+    background: linear-gradient(120deg, var(--accent), var(--accent-2));
+    color: white;
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+    cursor: pointer;
+    transition: transform 0.15s, box-shadow 0.15s;
+    box-shadow: 0 10px 20px rgba(91, 59, 255, 0.35);
+  }
+
+  button:hover { transform: translateY(-2px); box-shadow: 0 14px 26px rgba(91, 59, 255, 0.45); }
+  button:active { transform: translateY(0); }
+
+  .error {
+    color: var(--accent);
+    font-size: 13px;
+    margin-top: 8px;
+    min-height: 16px;
+    font-weight: 600;
+  }
+
+  .reveal-badge {
+    font-size: 54px;
+    margin-bottom: 6px;
+  }
+
+  .reveal-text {
+    font-size: 30px;
+    font-weight: 800;
+    color: var(--ink);
+    line-height: 1.25;
+    margin: 6px 0 4px;
+  }
+
+  .reveal-text span {
+    background: linear-gradient(120deg, var(--accent), var(--accent-2));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .back-btn {
+    margin-top: 22px;
+    background: none;
+    box-shadow: none;
+    color: var(--accent-2);
+    font-weight: 700;
+    font-size: 14px;
+    text-decoration: underline;
+    padding: 6px;
+    width: auto;
+  }
+
+  .back-btn:hover { transform: none; opacity: 0.8; box-shadow: none; }
+</style>
+</head>
+<body>
+
+  <div class="card">
+    <div id="view-input" class="view active">
+      <span class="eyebrow">Step 1</span>
+      <h1>What's your name?</h1>
+      <p class="sub">Type it in and find out the truth.</p>
+      <input type="text" id="nameInput" placeholder="e.g. Marco" autocomplete="off" />
+      <div class="error" id="errorMsg"></div>
+      <button id="submitBtn">Reveal it</button>
+    </div>
+
+    <div id="view-result" class="view">
+      <div class="reveal-badge">💅</div>
+      <span class="eyebrow">Step 2</span>
+      <p class="reveal-text">Pag nababasa mo to <span id="resultName"></span>, isa kang tunay na bading</p>
+      <button class="back-btn" id="backBtn">← try another name</button>
+    </div>
+  </div>
+
+<script>
+  const input = document.getElementById('nameInput');
+  const submitBtn = document.getElementById('submitBtn');
+  const backBtn = document.getElementById('backBtn');
+  const errorMsg = document.getElementById('errorMsg');
+  const viewInput = document.getElementById('view-input');
+  const viewResult = document.getElementById('view-result');
+  const resultName = document.getElementById('resultName');
+
+  function goToResult() {
+    const name = input.value.trim();
+    if (!name) {
+      errorMsg.textContent = "Type a name first, charot.";
+      input.focus();
+      return;
+    }
+    errorMsg.textContent = "";
+    resultName.textContent = name;
+    viewInput.classList.remove('active');
+    viewResult.classList.add('active');
+    launchConfetti();
+  }
+
+  function goBack() {
+    viewResult.classList.remove('active');
+    viewInput.classList.add('active');
+    input.value = "";
+    errorMsg.textContent = "";
+    input.focus();
+  }
+
+  submitBtn.addEventListener('click', goToResult);
+  backBtn.addEventListener('click', goBack);
+  input.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') goToResult();
+  });
+
+  function launchConfetti() {
+    const colors = ['#ff3d81', '#5b3bff', '#ffd54f', '#ffffff', '#7b5bff'];
+    for (let i = 0; i < 40; i++) {
+      const el = document.createElement('div');
+      el.className = 'confetti';
+      const size = 6 + Math.random() * 6;
+      el.style.width = size + 'px';
+      el.style.height = size * 0.6 + 'px';
+      el.style.left = Math.random() * 100 + 'vw';
+      el.style.background = colors[Math.floor(Math.random() * colors.length)];
+      document.body.appendChild(el);
+
+      const duration = 1800 + Math.random() * 1400;
+      const rotate = Math.random() * 720 - 360;
+      const drift = (Math.random() - 0.5) * 200;
+
+      el.animate([
+        { transform: `translate(0, 0) rotate(0deg)`, opacity: 1 },
+        { transform: `translate(${drift}px, 100vh) rotate(${rotate}deg)`, opacity: 0.9 }
+      ], {
+        duration: duration,
+        easing: 'cubic-bezier(.25,.46,.45,.94)',
+        fill: 'forwards'
+      });
+
+      setTimeout(() => el.remove(), duration + 100);
+    }
+  }
+</script>
+
+</body>
+</html>
