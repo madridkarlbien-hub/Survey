@@ -34,11 +34,24 @@
 - **Status:** Initial sprites were made in ChatGPT; they will be redone in the Hades-inspired style
 
 ## Technical
-- **Engine:** Not chosen yet
-- **Language:** Not chosen yet
-- **Constraint:** The build approach should not use a lot of tokens (small, focused tasks; data-driven content)
+| Item | Decision |
+|---|---|
+| Engine | **Godot 4** (exact version: _record here after install, e.g. 4.x.y stable_) |
+| Language | **GDScript** (Godot 4 syntax only, never Godot 3) |
+| Platform | **PC / Steam (Windows) first** |
+| Dev machine | Windows company laptop |
+| Camera | **Straight top-down, like Vampire Survivors** (not Hades' angled 3/4 view) |
+| Constraint | The build approach should not use a lot of tokens |
+
+## Rules for Claude (token-efficient workflow)
+- Write Godot 4 / GDScript 2.0 code only (`@export`, `@onready`, `super()`, typed variables, `CharacterBody2D` + `velocity`)
+- Content is data-driven: characters, boons, enemies and waves live in small `Resource` (`.tres`) files, so new content needs no new code
+- One small, focused task per request; edit only the files the task needs
+- Keep scripts short and single-purpose; prefer text-editable scenes (`.tscn`) over editor-only steps
+- When a step must happen in the Godot editor, give Karl short numbered click-by-click instructions
+- Karl play-tests on the laptop and reports back; Claude does not assume the game was run
 
 ## Open Decisions
-1. [ ] Choose the game engine and programming language
-2. [ ] Define a token-efficient build workflow with Claude Code
+1. [x] Choose the game engine and programming language: Godot 4 + GDScript
+2. [ ] Define a token-efficient build workflow with Claude Code (draft rules above)
 3. [ ] Finalize the pipeline for redoing sprites in the Hades style
