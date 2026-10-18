@@ -36,10 +36,11 @@
 ## Technical
 | Item | Decision |
 |---|---|
-| Engine | **Godot 4** (exact version: _record here after install, e.g. 4.x.y stable_) |
+| Engine | **Godot 4.7.2 stable** |
 | Language | **GDScript** (Godot 4 syntax only, never Godot 3) |
 | Platform | **PC / Steam (Windows) first** |
-| Dev machine | Windows company laptop |
+| Dev machine | Windows company laptop for now; project moves to a personal laptop later (Karl owns the Godot/GitHub accounts) |
+| Renderer | Compatibility (light on older laptop GPUs) |
 | Camera | **Straight top-down, like Vampire Survivors** (not Hades' angled 3/4 view) |
 | Constraint | The build approach should not use a lot of tokens |
 
@@ -50,6 +51,20 @@
 - Keep scripts short and single-purpose; prefer text-editable scenes (`.tscn`) over editor-only steps
 - When a step must happen in the Godot editor, give Karl short numbered click-by-click instructions
 - Karl play-tests on the laptop and reports back; Claude does not assume the game was run
+
+## Project Layout
+| Path | What it holds |
+|---|---|
+| `project.godot` | Engine settings, input map (`move_*`: WASD, arrows, gamepad left stick) |
+| `data/characters/` | `CharacterData` script + one `.tres` per playable creature |
+| `scenes/player/` | Player scene and movement script |
+| `scenes/rooms/` | Rooms; `test_room` is the main scene for now |
+
+## Milestones
+1. [x] One playable creature (Tikbalang, placeholder circle) walks around a walled test room
+2. [ ] Enemies spawn in waves and chase the player
+3. [ ] Auto-attack, then XP and level-ups
+4. [ ] Boons, rooms, and the hub
 
 ## Open Decisions
 1. [x] Choose the game engine and programming language: Godot 4 + GDScript

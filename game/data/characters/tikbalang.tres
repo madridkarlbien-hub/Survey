@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="CharacterData" format=3]
+
+[ext_resource type="Script" path="res://data/characters/character_data.gd" id="1_data"]
+
+[resource]
+script = ExtResource("1_data")
+display_name = "Tikbalang"
+description = "A towering horse-headed trickster of the mountains and forests. Fast on its hooves, it leads travelers astray."
+max_health = 90
+move_speed = 260.0
+placeholder_color = Color(0.55, 0.36, 0.2, 1)
