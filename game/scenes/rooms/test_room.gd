@@ -1,8 +1,11 @@
 # Author: Karl Bien Madrid
 extends Node2D
 ## A walled arena for testing. The floor and walls are built from `room_size`.
+## Starts the waves and shows the HUD; restarts the run when the player dies.
 
-@export var room_size := Vector2(1600, 1200)
+const RESTART_DELAY := 2.0
+
+@export var room_size := Vector2(3200, 2400)
 @export var wall_thickness := 32.0
 @export var grid_spacing := 64.0
 @export var floor_color := Color("2e2a24")
@@ -10,6 +13,12 @@ extends Node2D
 @export var wall_color := Color("6b5640")
 
 var _wall_rects: Array[Rect2] = []
+var _time_survived := 0.0
+
+@onready var _player: Player = $Player
+@onready var _spawner: WaveSpawner = $WaveSpawner
+@onready var _stats_label: Label = $HUD/Stats
+@onready var _defeated_label: Label = $HUD/Defeated
 
 
 func _ready() -> void:
@@ -20,6 +29,27 @@ func _ready() -> void:
 	_add_wall(Rect2(-half.x - t, -half.y, t, room_size.y)) # left
 	_add_wall(Rect2(half.x, -half.y, t, room_size.y)) # right
 	queue_redraw()
+
+	_player.died.connect(_on_player_died)
+	_spawner.start(_player, Rect2(-half, room_size))
+
+
+func _process(delta: float) -> void:
+	if _player.health > 0:
+		_time_survived += delta
+	var seconds := int(_time_survived)
+	_stats_label.text = "HP %d/%d    Wave %d    Time %d:%02d" % [
+		_player.health, _player.character.max_health,
+		_spawner.wave_number, seconds / 60, seconds % 60,
+	]
+
+
+func _on_player_died() -> void:
+	_player.set_physics_process(false)
+	_spawner.stop()
+	_defeated_label.show()
+	await get_tree().create_timer(RESTART_DELAY).timeout
+	get_tree().reload_current_scene()
 
 
 func _add_wall(rect: Rect2) -> void:

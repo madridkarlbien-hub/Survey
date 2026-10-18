@@ -3,20 +3,57 @@ class_name Player
 extends CharacterBody2D
 ## The playable creature. Moves in 8 directions; stats come from `character`.
 
+signal died
+
 const BODY_RADIUS := 16.0
+## Seconds of safety after being hit, so a crowd can't drain health instantly.
+const INVULNERABLE_TIME := 0.5
 
 @export var character: CharacterData
 
 var facing := Vector2.RIGHT
+var health: int
+
+var _invulnerable_left := 0.0
+
+@onready var _hurtbox: Area2D = $Hurtbox
 
 
-func _physics_process(_delta: float) -> void:
+func _ready() -> void:
+	health = character.max_health
+
+
+func _physics_process(delta: float) -> void:
 	var input := Input.get_vector("move_left", "move_right", "move_up", "move_down")
 	velocity = input * character.move_speed
 	if input != Vector2.ZERO:
 		facing = input.normalized()
 		queue_redraw()
 	move_and_slide()
+
+	_invulnerable_left = maxf(_invulnerable_left - delta, 0.0)
+	modulate.a = 0.4 if _invulnerable_left > 0.0 else 1.0
+	if _invulnerable_left == 0.0:
+		_check_contact_damage()
+
+
+func take_damage(amount: int) -> void:
+	if health <= 0:
+		return
+	health = maxi(health - amount, 0)
+	_invulnerable_left = INVULNERABLE_TIME
+	if health == 0:
+		died.emit()
+
+
+func _check_contact_damage() -> void:
+	# Take one hit from the strongest enemy touching us.
+	var damage := 0
+	for body in _hurtbox.get_overlapping_bodies():
+		if body is Enemy:
+			damage = maxi(damage, body.data.contact_damage)
+	if damage > 0:
+		take_damage(damage)
 
 
 func _draw() -> void:

@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="EnemyData" format=3]
+
+[ext_resource type="Script" path="res://data/enemies/enemy_data.gd" id="1_data"]
+
+[resource]
+script = ExtResource("1_data")
+display_name = "Corrupted Spirit (placeholder)"
+max_health = 10
+move_speed = 110.0
+contact_damage = 5
+radius = 12.0
+placeholder_color = Color(0.3, 0.12, 0.35, 1)

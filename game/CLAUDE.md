@@ -26,6 +26,7 @@
 | Structure | Hades structure (hub, rooms, boons, bosses) plus larger survivor-like enemy waves |
 | Setting | Filipino mythology and folklore |
 | Playable characters | Filipino mythological/folklore creatures (the playable characters, not the enemies) |
+| Enemies | Leaning toward corrupted/evil folklore beings (not final); placeholder enemy for now |
 | Character designs | Initial designs finished |
 
 ## Art
@@ -57,12 +58,18 @@
 |---|---|
 | `project.godot` | Engine settings, input map (`move_*`: WASD, arrows, gamepad left stick) |
 | `data/characters/` | `CharacterData` script + one `.tres` per playable creature |
+| `data/enemies/` | `EnemyData` script + one `.tres` per enemy type |
+| `data/waves/` | `WaveData` / `WaveSet` scripts; `test_waves.tres` lists the waves in order (last one repeats) |
+| `scenes/enemies/` | Enemy scene (chases the player) and `WaveSpawner` (spawns just off-screen, capped at 300) |
+| `scenes/ui/` | HUD: HP, wave, time; "Defeated" message |
 | `scenes/player/` | Player scene and movement script |
-| `scenes/rooms/` | Rooms; `test_room` is the main scene for now |
+| `scenes/rooms/` | Rooms; `test_room` is the main scene for now (walls, starts waves, restarts on death) |
+
+**Collision layers:** 1 = world/walls, 2 = player, 3 = enemies (bit value 4). The player's `Hurtbox` Area2D detects enemies for contact damage.
 
 ## Milestones
 1. [x] One playable creature (Tikbalang, placeholder circle) walks around a walled test room
-2. [ ] Enemies spawn in waves and chase the player
+2. [x] Enemies spawn in waves and chase the player (placeholder "Corrupted Spirit"), with contact damage, HUD, and restart on death
 3. [ ] Auto-attack, then XP and level-ups
 4. [ ] Boons, rooms, and the hub
 

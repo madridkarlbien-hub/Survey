@@ -1,0 +1,33 @@
+[gd_resource type="Resource" script_class="WaveSet" format=3]
+
+[ext_resource type="Script" path="res://data/waves/wave_set.gd" id="1_set"]
+[ext_resource type="Script" path="res://data/waves/wave_data.gd" id="2_wave"]
+[ext_resource type="Resource" path="res://data/enemies/corrupted_spirit.tres" id="3_spirit"]
+
+[sub_resource type="Resource" id="Wave_1"]
+script = ExtResource("2_wave")
+enemy = ExtResource("3_spirit")
+enemy_count = 10
+duration = 15.0
+
+[sub_resource type="Resource" id="Wave_2"]
+script = ExtResource("2_wave")
+enemy = ExtResource("3_spirit")
+enemy_count = 25
+duration = 20.0
+
+[sub_resource type="Resource" id="Wave_3"]
+script = ExtResource("2_wave")
+enemy = ExtResource("3_spirit")
+enemy_count = 50
+duration = 25.0
+
+[sub_resource type="Resource" id="Wave_4"]
+script = ExtResource("2_wave")
+enemy = ExtResource("3_spirit")
+enemy_count = 100
+duration = 30.0
+
+[resource]
+script = ExtResource("1_set")
+waves = Array[ExtResource("2_wave")]([SubResource("Wave_1"), SubResource("Wave_2"), SubResource("Wave_3"), SubResource("Wave_4")])
