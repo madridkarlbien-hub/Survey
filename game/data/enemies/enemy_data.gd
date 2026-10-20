@@ -11,3 +11,5 @@ extends Resource
 @export var radius: float = 12.0
 ## Placeholder body color until the real sprite is ready.
 @export var placeholder_color: Color = Color.WHITE
+## XP dropped when defeated.
+@export var xp_value: int = 1

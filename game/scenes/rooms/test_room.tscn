@@ -6,6 +6,7 @@
 [ext_resource type="Resource" path="res://data/waves/test_waves.tres" id="4_waves"]
 [ext_resource type="PackedScene" path="res://scenes/enemies/enemy.tscn" id="5_enemy"]
 [ext_resource type="PackedScene" path="res://scenes/ui/hud.tscn" id="6_hud"]
+[ext_resource type="PackedScene" path="res://scenes/ui/level_up_menu.tscn" id="7_level_up"]
 
 [node name="TestRoom" type="Node2D"]
 script = ExtResource("1_room")
@@ -18,3 +19,5 @@ enemy_scene = ExtResource("5_enemy")
 [node name="Player" parent="." instance=ExtResource("2_player")]
 
 [node name="HUD" parent="." instance=ExtResource("6_hud")]
+
+[node name="LevelUpMenu" parent="." instance=ExtResource("7_level_up")]

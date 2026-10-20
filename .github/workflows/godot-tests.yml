@@ -1,0 +1,20 @@
+# Author: Karl Bien Madrid
+# Runs the game's automated tests on every push that changes the game.
+name: Godot tests
+
+on:
+  push:
+    paths:
+      - "game/**"
+      - ".github/workflows/godot-tests.yml"
+  pull_request:
+    paths:
+      - "game/**"
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run tests
+        run: bash game/tools/run_tests.sh

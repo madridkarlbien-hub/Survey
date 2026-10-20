@@ -1,0 +1,57 @@
+[gd_resource type="Resource" script_class="UpgradePool" format=3]
+
+[ext_resource type="Script" path="res://data/upgrades/upgrade_pool.gd" id="1_pool"]
+[ext_resource type="Script" path="res://data/upgrades/upgrade_data.gd" id="2_upgrade"]
+
+[sub_resource type="Resource" id="Heavy_Hooves"]
+script = ExtResource("2_upgrade")
+display_name = "Heavy Hooves"
+description = "Shockwave damage +5"
+stat = "attack_damage"
+amount = 5.0
+
+[sub_resource type="Resource" id="Wide_Stomp"]
+script = ExtResource("2_upgrade")
+display_name = "Wide Stomp"
+description = "Shockwave reaches 20 farther"
+stat = "attack_radius"
+amount = 20.0
+
+[sub_resource type="Resource" id="Restless_Stamping"]
+script = ExtResource("2_upgrade")
+display_name = "Restless Stamping"
+description = "Shockwave comes 0.15s sooner"
+stat = "attack_cooldown"
+amount = -0.15
+
+[sub_resource type="Resource" id="Mountain_Force"]
+script = ExtResource("2_upgrade")
+display_name = "Mountain Force"
+description = "Shockwave pushes enemies harder"
+stat = "attack_knockback"
+amount = 80.0
+
+[sub_resource type="Resource" id="Swift_Gallop"]
+script = ExtResource("2_upgrade")
+display_name = "Swift Gallop"
+description = "Move speed +25"
+stat = "move_speed"
+amount = 25.0
+
+[sub_resource type="Resource" id="Tough_Hide"]
+script = ExtResource("2_upgrade")
+display_name = "Tough Hide"
+description = "Max HP +20 and heal 20"
+stat = "max_health"
+amount = 20.0
+
+[sub_resource type="Resource" id="Tricksters_Pull"]
+script = ExtResource("2_upgrade")
+display_name = "Trickster's Pull"
+description = "Collect XP from 40 farther away"
+stat = "pickup_radius"
+amount = 40.0
+
+[resource]
+script = ExtResource("1_pool")
+upgrades = Array[ExtResource("2_upgrade")]([SubResource("Heavy_Hooves"), SubResource("Wide_Stomp"), SubResource("Restless_Stamping"), SubResource("Mountain_Force"), SubResource("Swift_Gallop"), SubResource("Tough_Hide"), SubResource("Tricksters_Pull")])

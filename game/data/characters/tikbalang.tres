@@ -5,7 +5,12 @@
 [resource]
 script = ExtResource("1_data")
 display_name = "Tikbalang"
-description = "A towering horse-headed trickster of the mountains and forests. Fast on its hooves, it leads travelers astray."
+description = "A towering horse-headed trickster of the mountains and forests. Fast on its hooves, it leads travelers astray. Its stomp sends out a shockwave that hurts and pushes back nearby enemies."
 max_health = 90
 move_speed = 260.0
+pickup_radius = 80.0
+attack_damage = 10.0
+attack_radius = 110.0
+attack_cooldown = 1.5
+attack_knockback = 250.0
 placeholder_color = Color(0.55, 0.36, 0.2, 1)
