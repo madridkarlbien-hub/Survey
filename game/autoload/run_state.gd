@@ -74,6 +74,8 @@ func store_player(player: Player) -> void:
 		"health": player.health,
 		"level": player.level,
 		"xp": player.xp,
+		"boons": player.boons.duplicate(),
+		"kills": player.kills,
 	}
 
 
@@ -85,6 +87,8 @@ func restore_player(player: Player) -> void:
 	player.health = _saved_player.health
 	player.level = _saved_player.level
 	player.xp = _saved_player.xp
+	player.boons = _saved_player.boons
+	player.kills = _saved_player.kills
 
 
 func _pick_room(avoid: RoomData) -> RoomData:

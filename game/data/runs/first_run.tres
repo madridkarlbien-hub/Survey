@@ -10,13 +10,17 @@
 [ext_resource type="Resource" path="res://data/rewards/upgrade.tres" id="8_upgrade"]
 [ext_resource type="Resource" path="res://data/rewards/heal.tres" id="9_heal"]
 [ext_resource type="Resource" path="res://data/rewards/bonus_xp.tres" id="10_xp"]
+[ext_resource type="Resource" path="res://data/rewards/boon_apolaki.tres" id="11_apolaki"]
+[ext_resource type="Resource" path="res://data/rewards/boon_mayari.tres" id="12_mayari"]
+[ext_resource type="Resource" path="res://data/rewards/boon_amanikable.tres" id="13_amanikable"]
+[ext_resource type="Resource" path="res://data/rewards/boon_anitun_tabu.tres" id="14_anitun_tabu"]
 
 [resource]
 script = ExtResource("1_run")
 room_pool = Array[ExtResource("2_room")]([ExtResource("4_swarm"), ExtResource("5_grove"), ExtResource("6_pass")])
 rooms_before_boss = 6
 boss_room = ExtResource("7_boss")
-reward_pool = Array[ExtResource("3_reward")]([ExtResource("8_upgrade"), ExtResource("9_heal"), ExtResource("10_xp")])
+reward_pool = Array[ExtResource("3_reward")]([ExtResource("8_upgrade"), ExtResource("9_heal"), ExtResource("10_xp"), ExtResource("11_apolaki"), ExtResource("12_mayari"), ExtResource("13_amanikable"), ExtResource("14_anitun_tabu")])
 difficulty_per_room = 0.2
 min_doors = 2
 max_doors = 3

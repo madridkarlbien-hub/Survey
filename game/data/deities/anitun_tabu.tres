@@ -1,0 +1,38 @@
+[gd_resource type="Resource" script_class="DeityData" format=3]
+
+[ext_resource type="Script" path="res://data/deities/deity_data.gd" id="1_deity"]
+[ext_resource type="Script" path="res://data/deities/boon_data.gd" id="2_boon"]
+
+[sub_resource type="Resource" id="Boon_stormcall_stomp"]
+script = ExtResource("2_boon")
+display_name = "Stormcall Stomp"
+description = "Lightning jumps from enemies hit to 3 more (8 damage each)"
+effect = "stormcall_stomp"
+power = 8.0
+duration = 0.0
+count = 3
+
+[sub_resource type="Resource" id="Boon_gale_step"]
+script = ExtResource("2_boon")
+display_name = "Gale Step"
+description = "Move speed +40"
+effect = "gale_step"
+power = 40.0
+duration = 0.0
+count = 0
+
+[sub_resource type="Resource" id="Boon_cleansing_rain"]
+script = ExtResource("2_boon")
+display_name = "Cleansing Rain"
+description = "Heal 5 HP every 10 enemies defeated"
+effect = "cleansing_rain"
+power = 5.0
+duration = 0.0
+count = 10
+
+[resource]
+script = ExtResource("1_deity")
+display_name = "Anitun Tabu"
+domain = "Wind and rain"
+color = Color(0.95, 0.95, 0.45, 1)
+boons = Array[ExtResource("2_boon")]([SubResource("Boon_stormcall_stomp"), SubResource("Boon_gale_step"), SubResource("Boon_cleansing_rain")])

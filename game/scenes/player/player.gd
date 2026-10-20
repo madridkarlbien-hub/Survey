@@ -2,7 +2,7 @@
 class_name Player
 extends CharacterBody2D
 ## The playable creature. Moves in 8 directions; stats come from `character`.
-## Collects XP, levels up, and takes upgrades.
+## Collects XP, levels up, and takes upgrades and boons.
 
 signal died
 signal leveled_up(new_level: int)
@@ -12,6 +12,9 @@ const BODY_RADIUS := 16.0
 const INVULNERABLE_TIME := 0.5
 ## Upgrades can never make the attack faster than this.
 const MIN_ATTACK_COOLDOWN := 0.3
+const FIRE_PATCH_SCENE := preload("res://scenes/attacks/fire_patch.tscn")
+## Blazing Trail: seconds between fire patches while moving.
+const FIRE_PATCH_INTERVAL := 0.3
 
 @export var character: CharacterData
 
@@ -19,8 +22,11 @@ var facing := Vector2.RIGHT
 var health: int
 var level := 1
 var xp := 0
+var boons: Array[BoonData] = []
+var kills := 0
 
 var _invulnerable_left := 0.0
+var _fire_patch_left := 0.0
 
 @onready var _hurtbox: Area2D = $Hurtbox
 
@@ -38,6 +44,8 @@ func _physics_process(delta: float) -> void:
 		facing = input.normalized()
 		queue_redraw()
 	move_and_slide()
+	if input != Vector2.ZERO:
+		_drop_fire(delta)
 
 	_invulnerable_left = maxf(_invulnerable_left - delta, 0.0)
 	modulate.a = 0.4 if _invulnerable_left > 0.0 else 1.0
@@ -49,7 +57,7 @@ func take_damage(amount: int) -> void:
 	if health <= 0:
 		return
 	health = maxi(health - amount, 0)
-	_invulnerable_left = INVULNERABLE_TIME
+	_invulnerable_left = invulnerable_time()
 	if health == 0:
 		died.emit()
 
@@ -78,6 +86,50 @@ func apply_upgrade(upgrade: UpgradeData) -> void:
 	character.attack_cooldown = maxf(character.attack_cooldown, MIN_ATTACK_COOLDOWN)
 	if upgrade.stat == "max_health":
 		health = mini(health + int(upgrade.amount), character.max_health)
+
+
+## Seconds of safety after a hit (Lunar Veil makes it longer).
+func invulnerable_time() -> float:
+	var veil := get_boon("lunar_veil")
+	return INVULNERABLE_TIME + (veil.power if veil else 0.0)
+
+
+## The owned boon with this effect, or null.
+func get_boon(effect: String) -> BoonData:
+	for boon in boons:
+		if boon.effect == effect:
+			return boon
+	return null
+
+
+func add_boon(boon: BoonData) -> void:
+	boons.append(boon)
+	if boon.effect == "gale_step":
+		character.move_speed += boon.power
+
+
+func register_kill() -> void:
+	kills += 1
+	var rain := get_boon("cleansing_rain")
+	if rain and kills % rain.count == 0:
+		heal(int(rain.power))
+
+
+func _drop_fire(delta: float) -> void:
+	var trail := get_boon("blazing_trail")
+	if trail == null:
+		return
+	_fire_patch_left -= delta
+	if _fire_patch_left > 0.0:
+		return
+	_fire_patch_left = FIRE_PATCH_INTERVAL
+	var patch: FirePatch = FIRE_PATCH_SCENE.instantiate()
+	patch.damage_per_second = trail.power
+	patch.lifetime = trail.duration
+	patch.position = position
+	# Behind the player and enemies, so the fire doesn't cover them.
+	get_parent().add_child(patch)
+	get_parent().move_child(patch, 0)
 
 
 func _check_contact_damage() -> void:

@@ -67,13 +67,14 @@
 | `data/upgrades/` | `UpgradeData` (adds `amount` to a stat by name) + `basic_upgrades.tres` pool |
 | `data/waves/` | `WaveData` / `WaveSet` scripts (rooms embed their own wave lists) |
 | `data/rooms/` | `RoomData` (size, waves, clear mode DEFEAT_ALL or SURVIVE) + one `.tres` per room; `boss_lair.tres` |
-| `data/rewards/` | `RewardData` (UPGRADE, HEAL, BONUS_XP) shown on doors, granted when the next room is cleared |
+| `data/rewards/` | `RewardData` (UPGRADE, HEAL, BONUS_XP, BOON + deity) shown on doors, granted when the next room is cleared |
+| `data/deities/` | `DeityData` + `BoonData`; one `.tres` per deity (Apolaki, Mayari, Amanikable, Anitun Tabu), 3 boons each. Boon `effect` names map to code in `Shockwave`/`Enemy`/`Player`; all owned boons stack |
 | `data/runs/` | `RunData`: room pool, 6 rooms before boss, reward pool, +20% enemies per room, 2-3 doors |
 | `autoload/run_state.gd` | `RunState` autoload: current room number, pending reward, player stats carried between rooms |
 | `scenes/enemies/` | Enemy scene (chases the player) and `WaveSpawner` (spawns just off-screen, capped at 300) |
-| `scenes/attacks/` | `Shockwave`: Tikbalang's stomp, uses the `attack_*` stats |
+| `scenes/attacks/` | `Shockwave` (Tikbalang's stomp; `make_hit` adds boon effects, echo, undertow, lightning), `Hit` (damage + push + burn/slow/wall damage), `FirePatch` (Blazing Trail) |
 | `scenes/pickups/` | `XpOrb`: dropped by enemies, flies to the player within `pickup_radius` |
-| `scenes/ui/` | HUD (XP bar top, level + room top-left, HP bar bottom-left, objective, banner) and `LevelUpMenu` (pauses, pick 1 of 3; queues level-ups and Upgrade rewards) |
+| `scenes/ui/` | HUD (XP bar top, level + room top-left, HP bar bottom-left, owned boons bottom-right, objective, banner) and `LevelUpMenu` (pauses; queues level-ups, Upgrade rewards and deity boon picks; never re-offers owned boons) |
 | `tests/` | Automated tests: `test_*.gd` files, base class in `tests/framework/test_case.gd`, test-only data in `tests/fixtures/` |
 | `tools/` | `run_tests.sh`, `take_screenshots.sh`, `get_godot.sh` (Linux/cloud only) |
 | `screenshots/` | Latest screenshots of key moments (has `.gdignore`, so Godot skips it) |
@@ -87,7 +88,7 @@
 2. [x] Enemies spawn in waves and chase the player (placeholder "Corrupted Spirit"), with contact damage, HUD, and restart on death
 3. [x] Auto-attack (Tikbalang shockwave), XP orbs, and level-ups (pick 1 of 3 upgrades)
 4. [x] Rooms: 6 rooms + boss per run, DEFEAT_ALL or SURVIVE clear rules, 2-3 reward doors, stats carry over, victory on boss clear
-5. [ ] Boons (Filipino deities)
+5. [x] Boons: 4 Filipino deities x 3 boons, offered by boon doors; elements stack
 6. [ ] Hub
 
 ## Balance Notes (untested by a human)
@@ -96,6 +97,9 @@
 - Boss: 300 HP, 15 contact damage, 85% knockback resistance; boss room doesn't scale with depth
 - Rewards: Heal 30 HP, Bonus XP 12, Upgrade = 1 free pick
 - Bot full run (unbeatable player standing still, always first upgrade/door): rooms ~42-45 s each, whole run ~5:15, reached Lv 18. Leveling looks fast and room times look flat across depth; needs a human to judge
+
+## Cultural Accuracy (before release)
+- Deities are mostly from Tagalog tradition; names, domains and stories vary by source and region. Verify against good sources (or a folklore expert) and depict them respectfully. Bathala (rare boon / hub) and Tala (5th deity) are saved for later.
 
 ## Open Decisions
 1. [x] Choose the game engine and programming language: Godot 4 + GDScript

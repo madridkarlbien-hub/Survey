@@ -1,0 +1,38 @@
+[gd_resource type="Resource" script_class="DeityData" format=3]
+
+[ext_resource type="Script" path="res://data/deities/deity_data.gd" id="1_deity"]
+[ext_resource type="Script" path="res://data/deities/boon_data.gd" id="2_boon"]
+
+[sub_resource type="Resource" id="Boon_moonlit_stomp"]
+script = ExtResource("2_boon")
+display_name = "Moonlit Stomp"
+description = "Shockwave slows enemies by 40% for 2s"
+effect = "moonlit_stomp"
+power = 0.4
+duration = 2.0
+count = 0
+
+[sub_resource type="Resource" id="Boon_lunar_veil"]
+script = ExtResource("2_boon")
+display_name = "Lunar Veil"
+description = "Your safety window after a hit lasts 0.5s longer"
+effect = "lunar_veil"
+power = 0.5
+duration = 0.0
+count = 0
+
+[sub_resource type="Resource" id="Boon_crescent_echo"]
+script = ExtResource("2_boon")
+display_name = "Crescent Echo"
+description = "A second, smaller shockwave follows each stomp (50% damage)"
+effect = "crescent_echo"
+power = 0.5
+duration = 0.0
+count = 0
+
+[resource]
+script = ExtResource("1_deity")
+display_name = "Mayari"
+domain = "Moon"
+color = Color(0.7, 0.75, 1, 1)
+boons = Array[ExtResource("2_boon")]([SubResource("Boon_moonlit_stomp"), SubResource("Boon_lunar_veil"), SubResource("Boon_crescent_echo")])

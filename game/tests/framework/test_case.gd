@@ -56,16 +56,23 @@ func auto_pick_upgrades(room: Node) -> void:
 
 func kill_all_enemies() -> void:
 	for enemy: Enemy in tree.get_nodes_in_group("enemies"):
-		enemy.take_hit(99999.0, Vector2.ZERO)
+		enemy.take_hit(Hit.new(99999.0))
 
 
-func spawn_enemy(room: Node, offset_from_player: Vector2) -> Enemy:
+func spawn_enemy(room: Node, offset_from_player: Vector2, enemy_data: EnemyData = null) -> Enemy:
 	var player: Player = room.get_node("Player")
 	var enemy: Enemy = load(ENEMY_SCENE).instantiate()
-	enemy.setup(load(PLACEHOLDER_ENEMY), player)
+	enemy.setup(enemy_data if enemy_data else load(PLACEHOLDER_ENEMY), player)
 	enemy.position = player.position + offset_from_player
 	room.get_node("WaveSpawner").add_child(enemy)
 	return enemy
+
+
+## A placeholder enemy with lots of health, so damage can be measured.
+func tough_enemy_data() -> EnemyData:
+	var tough: EnemyData = load(PLACEHOLDER_ENEMY).duplicate()
+	tough.max_health = 1000
+	return tough
 
 
 func wait_frames(count: int) -> void:

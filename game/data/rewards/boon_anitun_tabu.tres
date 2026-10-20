@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="RewardData" format=3]
+
+[ext_resource type="Script" path="res://data/rewards/reward_data.gd" id="1_reward"]
+[ext_resource type="Resource" path="res://data/deities/anitun_tabu.tres" id="2_deity"]
+
+[resource]
+script = ExtResource("1_reward")
+display_name = "Anitun Tabu's Boon"
+description = "Choose a blessing from Anitun Tabu, deity of wind and rain"
+kind = 3
+amount = 0.0
+color = Color(0.95, 0.95, 0.45, 1)
+deity = ExtResource("2_deity")

@@ -12,8 +12,8 @@ func test_level_up_pauses_and_offers_three_choices() -> void:
 	check(menu.visible, "menu should be visible")
 	check_eq(menu.choices.size(), 3, "number of choices")
 	var names := {}
-	for upgrade in menu.choices:
-		names[upgrade.display_name] = true
+	for choice in menu.choices:
+		names[choice.display_name] = true
 	check_eq(names.size(), 3, "choices should all be different")
 
 
@@ -22,7 +22,7 @@ func test_choosing_applies_upgrade_and_resumes() -> void:
 	var player: Player = room.get_node("Player")
 	var menu: LevelUpMenu = room.get_node("LevelUpMenu")
 	player.add_xp(player.xp_to_next_level())
-	var upgrade := menu.choices[0]
+	var upgrade: UpgradeData = menu.choices[0]
 	var before: float = player.character.get(upgrade.stat)
 	menu.choose(0)
 	var after: float = player.character.get(upgrade.stat)

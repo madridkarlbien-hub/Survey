@@ -27,6 +27,16 @@ func test_run_is_valid() -> void:
 	check(run.min_doors >= 1 and run.min_doors <= run.max_doors, "door counts don't make sense")
 
 
+func test_rewards_are_valid() -> void:
+	for path in _find_files("res://data/rewards", ".tres"):
+		var reward: RewardData = load(path)
+		check(reward.display_name != "", "%s has no name" % path)
+		if reward.kind == RewardData.Kind.BOON:
+			check(reward.deity != null, "%s is a boon reward with no deity" % path)
+		elif reward.kind != RewardData.Kind.UPGRADE:
+			check(reward.amount > 0.0, "%s gives nothing (amount is 0)" % path)
+
+
 func test_rooms_are_valid() -> void:
 	for path in _find_files("res://data/rooms", ".tres"):
 		var room: RoomData = load(path)

@@ -1,0 +1,38 @@
+[gd_resource type="Resource" script_class="DeityData" format=3]
+
+[ext_resource type="Script" path="res://data/deities/deity_data.gd" id="1_deity"]
+[ext_resource type="Script" path="res://data/deities/boon_data.gd" id="2_boon"]
+
+[sub_resource type="Resource" id="Boon_tidal_stomp"]
+script = ExtResource("2_boon")
+display_name = "Tidal Stomp"
+description = "Shockwave knockback is doubled"
+effect = "tidal_stomp"
+power = 1.0
+duration = 0.0
+count = 0
+
+[sub_resource type="Resource" id="Boon_undertow"]
+script = ExtResource("2_boon")
+display_name = "Undertow"
+description = "Each stomp pulls in enemies just outside its reach"
+effect = "undertow"
+power = 350.0
+duration = 0.0
+count = 0
+
+[sub_resource type="Resource" id="Boon_riptide"]
+script = ExtResource("2_boon")
+display_name = "Riptide"
+description = "Enemies knocked into walls take 10 damage"
+effect = "riptide"
+power = 10.0
+duration = 0.0
+count = 0
+
+[resource]
+script = ExtResource("1_deity")
+display_name = "Amanikable"
+domain = "Sea"
+color = Color(0.2, 0.55, 0.95, 1)
+boons = Array[ExtResource("2_boon")]([SubResource("Boon_tidal_stomp"), SubResource("Boon_undertow"), SubResource("Boon_riptide")])

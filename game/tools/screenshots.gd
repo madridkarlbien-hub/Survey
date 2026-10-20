@@ -4,7 +4,8 @@ extends SceneTree
 ## saving screenshots of key moments to game/screenshots/ and printing how long
 ## each room took. Start it with tools/take_screenshots.sh.
 ## The player stands still and lets the shockwave do the work; after each room
-## it walks into the first door and always takes the first upgrade.
+## it walks into a boon door when there is one (else the first door) and always
+## takes the first choice offered.
 
 const OUT_DIR := "res://screenshots/"
 const MAX_SECONDS := 900.0
@@ -55,6 +56,8 @@ func _process(_delta: float) -> bool:
 		_shoot_once("05_survive_room")
 	elif _room._is_boss_room and _boss_near(player) and _ring_visible(player):
 		_shoot_once("06_boss")
+	elif player.boons.size() >= 3 and seconds_in_room > 10.0 and _ring_visible(player):
+		_shoot_once("09_boons_in_action")
 
 	if _frames / FPS > MAX_SECONDS:
 		_log.append("Stopped: time limit reached")
@@ -89,16 +92,26 @@ func _handle_cleared(player: Player) -> void:
 	elif _cleared_frames == 100:
 		_shoot_once("04_doors")
 	elif _cleared_frames == 110:
-		player.global_position = doors[0].global_position
+		player.global_position = _preferred_door(doors).global_position
 
 
 func _door_offset_x(doors: Array[Door]) -> float:
 	return (doors[-1].global_position.x - doors[0].global_position.x) / 2.0
 
 
+func _preferred_door(doors: Array[Door]) -> Door:
+	for door in doors:
+		if door.reward and door.reward.kind == RewardData.Kind.BOON:
+			return door
+	return doors[0]
+
+
 func _pick_upgrade(menu: LevelUpMenu) -> void:
 	_busy = true
-	if not _taken.has("03_level_up_menu"):
+	if menu.choices[0] is BoonData:
+		if not _taken.has("08_boon_menu"):
+			await _shoot("08_boon_menu")
+	elif not _taken.has("03_level_up_menu"):
 		await _shoot("03_level_up_menu")
 	menu.choose(0)
 	_busy = false
@@ -109,6 +122,8 @@ func _finish() -> void:
 	if not _taken.has("07_victory"):
 		await _shoot("07_victory")
 	print("\n".join(_log))
+	var player: Player = _room.get_node("Player")
+	print("Boons: ", player.boons.map(func(boon: BoonData) -> String: return boon.display_name))
 	print("Total run time: %.1f s" % (_frames / FPS))
 	print("Saved: ", _taken.keys())
 	quit()

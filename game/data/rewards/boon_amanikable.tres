@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="RewardData" format=3]
+
+[ext_resource type="Script" path="res://data/rewards/reward_data.gd" id="1_reward"]
+[ext_resource type="Resource" path="res://data/deities/amanikable.tres" id="2_deity"]
+
+[resource]
+script = ExtResource("1_reward")
+display_name = "Amanikable's Boon"
+description = "Choose a blessing from Amanikable, deity of sea"
+kind = 3
+amount = 0.0
+color = Color(0.2, 0.55, 0.95, 1)
+deity = ExtResource("2_deity")

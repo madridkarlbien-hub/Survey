@@ -38,6 +38,7 @@ var _time_in_room := 0.0
 @onready var _stats_label: Label = $HUD/Stats
 @onready var _hp_bar: ProgressBar = $HUD/HpBar
 @onready var _hp_text: Label = $HUD/HpBar/HpText
+@onready var _boon_label: Label = $HUD/Boons
 @onready var _objective_label: Label = $HUD/Objective
 @onready var _banner_label: Label = $HUD/Banner
 @onready var _level_up_menu: LevelUpMenu = $LevelUpMenu
@@ -104,6 +105,8 @@ func _grant_reward(reward: RewardData) -> void:
 			_player.heal(int(reward.amount))
 		RewardData.Kind.BONUS_XP:
 			_player.add_xp(int(reward.amount))
+		RewardData.Kind.BOON:
+			_level_up_menu.offer_boon(reward.deity)
 
 
 func _open_doors() -> void:
@@ -161,6 +164,7 @@ func _update_hud() -> void:
 	_hp_bar.value = _player.health
 	_hp_text.text = "HP %d / %d" % [_player.health, _player.character.max_health]
 	_stats_label.text = "Lv %d    Room %s" % [_player.level, _room_label]
+	_boon_label.text = "\n".join(_player.boons.map(func(boon: BoonData) -> String: return boon.display_name))
 	_objective_label.text = _objective_text()
 
 

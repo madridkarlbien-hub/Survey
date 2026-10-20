@@ -1,0 +1,38 @@
+[gd_resource type="Resource" script_class="DeityData" format=3]
+
+[ext_resource type="Script" path="res://data/deities/deity_data.gd" id="1_deity"]
+[ext_resource type="Script" path="res://data/deities/boon_data.gd" id="2_boon"]
+
+[sub_resource type="Resource" id="Boon_sunfire_stomp"]
+script = ExtResource("2_boon")
+display_name = "Sunfire Stomp"
+description = "Shockwave burns enemies: 4 damage per second for 3s"
+effect = "sunfire_stomp"
+power = 4.0
+duration = 3.0
+count = 0
+
+[sub_resource type="Resource" id="Boon_warriors_fury"]
+script = ExtResource("2_boon")
+display_name = "Warrior's Fury"
+description = "Below half HP, the shockwave deals 50% more damage"
+effect = "warriors_fury"
+power = 0.5
+duration = 0.0
+count = 0
+
+[sub_resource type="Resource" id="Boon_blazing_trail"]
+script = ExtResource("2_boon")
+display_name = "Blazing Trail"
+description = "Leave fire as you move: 6 damage per second to enemies in it"
+effect = "blazing_trail"
+power = 6.0
+duration = 2.0
+count = 0
+
+[resource]
+script = ExtResource("1_deity")
+display_name = "Apolaki"
+domain = "Sun and war"
+color = Color(1, 0.55, 0.15, 1)
+boons = Array[ExtResource("2_boon")]([SubResource("Boon_sunfire_stomp"), SubResource("Boon_warriors_fury"), SubResource("Boon_blazing_trail")])

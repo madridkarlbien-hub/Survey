@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="RewardData" format=3]
+
+[ext_resource type="Script" path="res://data/rewards/reward_data.gd" id="1_reward"]
+[ext_resource type="Resource" path="res://data/deities/apolaki.tres" id="2_deity"]
+
+[resource]
+script = ExtResource("1_reward")
+display_name = "Apolaki's Boon"
+description = "Choose a blessing from Apolaki, deity of sun and war"
+kind = 3
+amount = 0.0
+color = Color(1, 0.55, 0.15, 1)
+deity = ExtResource("2_deity")
