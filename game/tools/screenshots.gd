@@ -1,76 +1,137 @@
 # Author: Karl Bien Madrid
 extends SceneTree
-## Plays a scripted run of the test room and saves screenshots of key moments
-## to game/screenshots/. Start it with tools/take_screenshots.sh.
+## A bot that plays one full run (6 rooms + boss) with an unbeatable player,
+## saving screenshots of key moments to game/screenshots/ and printing how long
+## each room took. Start it with tools/take_screenshots.sh.
+## The player stands still and lets the shockwave do the work; after each room
+## it walks into the first door and always takes the first upgrade.
 
 const OUT_DIR := "res://screenshots/"
-const MAX_SECONDS := 90.0
+const MAX_SECONDS := 900.0
+const FPS := 60.0
 
-var _room: Node
-var _player: Player
-var _menu: LevelUpMenu
 var _frames := 0
 var _taken := {}
 var _busy := false
+var _room: Node
+var _room_frames := 0
+var _cleared_frames := 0
+var _log: Array[String] = []
 
 
 func _initialize() -> void:
 	seed(12345)
-	_room = load("res://scenes/rooms/test_room.tscn").instantiate()
-	root.add_child(_room)
-	current_scene = _room
-	_player = _room.get_node("Player")
-	_menu = _room.get_node("LevelUpMenu")
+	for file in DirAccess.get_files_at(OUT_DIR):
+		if file.ends_with(".png"):
+			DirAccess.remove_absolute(ProjectSettings.globalize_path(OUT_DIR + file))
+	var first_room: Node = load("res://scenes/rooms/arena_room.tscn").instantiate()
+	root.add_child(first_room)
+	current_scene = first_room
 
 
 func _process(_delta: float) -> bool:
 	_frames += 1
-	if _busy or _frames < 2:
+	if _busy or current_scene == null or not current_scene.has_node("Player"):
 		return false
-	var seconds := _frames / 60.0
-	# Stay at full health so the run lasts long enough for every shot.
-	_player.health = _player.character.max_health
-	# Walk in a slow circle so the screenshots aren't all from the center.
-	_set_input(Vector2.RIGHT.rotated(seconds * 0.5))
+	if current_scene != _room:
+		_enter_room(current_scene)
+	_room_frames += 1
+	var player: Player = _room.get_node("Player")
+	var menu: LevelUpMenu = _room.get_node("LevelUpMenu")
+	var seconds_in_room := _room_frames / FPS
+	player.health = player.character.max_health
 
-	if _menu.visible:
-		_shoot_menu()
-	elif _frames == 30:
-		_shoot("01_start")
-	elif seconds > 20.0 and not _taken.has("02_shockwave") and _ring_visible():
-		_shoot("02_shockwave")
-	elif seconds > 30.0 and not _taken.has("03_xp_orbs") and get_nodes_in_group("xp_orbs").size() >= 5:
-		_shoot("03_xp_orbs")
-	elif seconds > 75.0 and not _taken.has("05_big_wave") and _ring_visible():
-		_shoot("05_big_wave")
+	if menu.visible:
+		_pick_upgrade(menu)
+	elif _room.state == _room.State.OVER and _room.get_node("HUD/Banner").text.begins_with("Victory"):
+		_finish()
+	elif _room.state == _room.State.CLEARED:
+		_handle_cleared(player)
+	elif _room_frames == 30 and _run_state().room_number == 1:
+		_shoot("01_first_room")
+	elif _run_state().room_number == 1 and seconds_in_room > 4.0 and _ring_visible(player):
+		_shoot_once("02_shockwave")
+	elif _room.room.clear_mode == RoomData.ClearMode.SURVIVE and seconds_in_room > 12.0:
+		_shoot_once("05_survive_room")
+	elif _room._is_boss_room and _boss_near(player) and _ring_visible(player):
+		_shoot_once("06_boss")
 
-	if _taken.size() >= 5 or seconds > MAX_SECONDS:
-		print("Saved: ", _taken.keys())
-		quit()
+	if _frames / FPS > MAX_SECONDS:
+		_log.append("Stopped: time limit reached")
+		_finish()
 	return false
 
 
-func _shoot_menu() -> void:
+## Autoloads can't be named directly in a -s script, so look it up instead.
+func _run_state() -> Node:
+	return root.get_node("RunState")
+
+
+func _enter_room(room: Node) -> void:
+	_room = room
+	_room_frames = 0
+	_cleared_frames = 0
+
+
+func _handle_cleared(player: Player) -> void:
+	_cleared_frames += 1
+	if _cleared_frames == 1:
+		_log.append("Room %s  %-15s %-10s %5.1fs   Lv %d   HP %d/%d" % [
+			_room._room_label, _room.room.display_name,
+			RoomData.ClearMode.keys()[_room.room.clear_mode], _room_frames / FPS,
+			player.level, player.health, player.character.max_health])
+	var doors: Array[Door] = _room.doors
+	if doors.is_empty():
+		return
+	if _cleared_frames == 60:
+		# Stand just below the doors so they're on screen.
+		player.global_position = doors[0].global_position + Vector2(_door_offset_x(doors), 260)
+	elif _cleared_frames == 100:
+		_shoot_once("04_doors")
+	elif _cleared_frames == 110:
+		player.global_position = doors[0].global_position
+
+
+func _door_offset_x(doors: Array[Door]) -> float:
+	return (doors[-1].global_position.x - doors[0].global_position.x) / 2.0
+
+
+func _pick_upgrade(menu: LevelUpMenu) -> void:
 	_busy = true
-	if not _taken.has("04_level_up_menu"):
-		await _shoot("04_level_up_menu")
-	_menu.choose(0)
+	if not _taken.has("03_level_up_menu"):
+		await _shoot("03_level_up_menu")
+	menu.choose(0)
 	_busy = false
 
 
-func _ring_visible() -> bool:
+func _finish() -> void:
+	_busy = true
+	if not _taken.has("07_victory"):
+		await _shoot("07_victory")
+	print("\n".join(_log))
+	print("Total run time: %.1f s" % (_frames / FPS))
+	print("Saved: ", _taken.keys())
+	quit()
+
+
+func _ring_visible(player: Player) -> bool:
 	# Mid-expansion, so the ring is big and still bright.
-	var left: float = _player.get_node("Shockwave")._ring_time_left
+	var left: float = player.get_node("Shockwave")._ring_time_left
 	return left > 0.08 and left < 0.13
 
 
-func _set_input(direction: Vector2) -> void:
-	for action in ["move_left", "move_right", "move_up", "move_down"]:
-		Input.action_release(action)
-	if direction.x < -0.3: Input.action_press("move_left")
-	if direction.x > 0.3: Input.action_press("move_right")
-	if direction.y < -0.3: Input.action_press("move_up")
-	if direction.y > 0.3: Input.action_press("move_down")
+func _boss_near(player: Player) -> bool:
+	for enemy: Enemy in get_nodes_in_group("enemies"):
+		if enemy.data.show_health_bar and enemy.global_position.distance_to(player.global_position) < 300.0:
+			return true
+	return false
+
+
+func _shoot_once(shot_name: String) -> void:
+	if not _taken.has(shot_name):
+		_busy = true
+		await _shoot(shot_name)
+		_busy = false
 
 
 func _shoot(shot_name: String) -> void:

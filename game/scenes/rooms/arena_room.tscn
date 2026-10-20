@@ -1,19 +1,17 @@
 [gd_scene format=3]
 
-[ext_resource type="Script" path="res://scenes/rooms/test_room.gd" id="1_room"]
+[ext_resource type="Script" path="res://scenes/rooms/arena_room.gd" id="1_room"]
 [ext_resource type="PackedScene" path="res://scenes/player/player.tscn" id="2_player"]
 [ext_resource type="Script" path="res://scenes/enemies/wave_spawner.gd" id="3_spawner"]
-[ext_resource type="Resource" path="res://data/waves/test_waves.tres" id="4_waves"]
 [ext_resource type="PackedScene" path="res://scenes/enemies/enemy.tscn" id="5_enemy"]
 [ext_resource type="PackedScene" path="res://scenes/ui/hud.tscn" id="6_hud"]
 [ext_resource type="PackedScene" path="res://scenes/ui/level_up_menu.tscn" id="7_level_up"]
 
-[node name="TestRoom" type="Node2D"]
+[node name="ArenaRoom" type="Node2D"]
 script = ExtResource("1_room")
 
 [node name="WaveSpawner" type="Node2D" parent="."]
 script = ExtResource("3_spawner")
-wave_set = ExtResource("4_waves")
 enemy_scene = ExtResource("5_enemy")
 
 [node name="Player" parent="." instance=ExtResource("2_player")]

@@ -54,6 +54,11 @@ func take_damage(amount: int) -> void:
 		died.emit()
 
 
+func heal(amount: int) -> void:
+	if health > 0:
+		health = mini(health + amount, character.max_health)
+
+
 func add_xp(amount: int) -> void:
 	xp += amount
 	while xp >= xp_to_next_level():

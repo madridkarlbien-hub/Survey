@@ -1,0 +1,37 @@
+[gd_resource type="Resource" script_class="RoomData" format=3]
+
+[ext_resource type="Script" path="res://data/rooms/room_data.gd" id="1_room"]
+[ext_resource type="Script" path="res://data/waves/wave_set.gd" id="2_set"]
+[ext_resource type="Script" path="res://data/waves/wave_data.gd" id="3_wave"]
+[ext_resource type="Resource" path="res://data/enemies/corrupted_spirit.tres" id="4_enemy"]
+
+[sub_resource type="Resource" id="Wave_1"]
+script = ExtResource("3_wave")
+enemy = ExtResource("4_enemy")
+enemy_count = 8
+duration = 10.0
+
+[sub_resource type="Resource" id="Wave_2"]
+script = ExtResource("3_wave")
+enemy = ExtResource("4_enemy")
+enemy_count = 14
+duration = 12.0
+
+[sub_resource type="Resource" id="Wave_3"]
+script = ExtResource("3_wave")
+enemy = ExtResource("4_enemy")
+enemy_count = 20
+duration = 14.0
+
+[sub_resource type="Resource" id="Waves"]
+script = ExtResource("2_set")
+waves = Array[ExtResource("3_wave")]([SubResource("Wave_1"), SubResource("Wave_2"), SubResource("Wave_3")])
+
+[resource]
+script = ExtResource("1_room")
+display_name = "Swarm Clearing"
+clear_mode = 0
+survive_time = 45.0
+room_size = Vector2(2400, 1600)
+wave_set = SubResource("Waves")
+scales_with_depth = true

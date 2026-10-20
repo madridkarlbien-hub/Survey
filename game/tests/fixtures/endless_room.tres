@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="RoomData" format=3]
+
+[ext_resource type="Script" path="res://data/rooms/room_data.gd" id="1_room"]
+[ext_resource type="Resource" path="res://tests/fixtures/test_waves.tres" id="2_waves"]
+
+[resource]
+script = ExtResource("1_room")
+display_name = "Endless Test Room"
+clear_mode = 1
+survive_time = 99999.0
+room_size = Vector2(3200, 2400)
+wave_set = ExtResource("2_waves")
+scales_with_depth = false

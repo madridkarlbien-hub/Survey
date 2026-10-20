@@ -7,7 +7,8 @@ GODOT="$("$(dirname "$0")/get_godot.sh")"
 LOG="$(mktemp)"
 
 "$GODOT" --headless --path "$GAME_DIR" --import >/dev/null 2>&1
-"$GODOT" --headless --path "$GAME_DIR" --fixed-fps 60 -s res://tests/run_tests.gd 2>&1 | tee "$LOG"
+# The time limit stops a broken test from hanging forever.
+timeout 300 "$GODOT" --headless --path "$GAME_DIR" --fixed-fps 60 -s res://tests/run_tests.gd 2>&1 | tee "$LOG"
 STATUS=${PIPESTATUS[0]}
 
 if grep -qE "SCRIPT ERROR|^ERROR:" "$LOG"; then

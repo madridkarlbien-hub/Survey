@@ -16,6 +16,11 @@ func _ready() -> void:
 	_player = get_tree().get_first_node_in_group("player")
 
 
+## Fly to the player from anywhere (used when a room is cleared).
+func attract() -> void:
+	_flying = true
+
+
 func _physics_process(delta: float) -> void:
 	if _player == null or _player.health <= 0:
 		return

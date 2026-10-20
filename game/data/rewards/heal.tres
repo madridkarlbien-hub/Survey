@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="RewardData" format=3]
+
+[ext_resource type="Script" path="res://data/rewards/reward_data.gd" id="1_reward"]
+
+[resource]
+script = ExtResource("1_reward")
+display_name = "Heal"
+description = "Restore 30 HP"
+kind = 1
+amount = 30.0
+color = Color(0.4, 0.9, 0.45, 1)

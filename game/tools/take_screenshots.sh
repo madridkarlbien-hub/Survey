@@ -9,4 +9,4 @@ GODOT="$("$(dirname "$0")/get_godot.sh")"
 "$GODOT" --headless --path "$GAME_DIR" --import >/dev/null 2>&1
 xvfb-run -a -s "-screen 0 1280x720x24" \
   "$GODOT" --path "$GAME_DIR" --rendering-driver opengl3 --audio-driver Dummy \
-  --fixed-fps 60 -s res://tools/screenshots.gd
+  --fixed-fps 60 -s res://tools/screenshots.gd 2>&1 | grep -vE "ALSA|alsa|audio driver|V-Sync|^\s+at: "

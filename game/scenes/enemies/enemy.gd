@@ -44,7 +44,7 @@ func take_hit(damage: float, push: Vector2) -> void:
 	if health <= 0.0:
 		return
 	health -= damage
-	_knockback += push
+	_knockback += push * (1.0 - data.knockback_resistance)
 	_flash_left = HIT_FLASH_TIME
 	queue_redraw()
 	if health <= 0.0:
@@ -65,3 +65,8 @@ func _draw() -> void:
 	var body_color := Color.WHITE if _flash_left > 0.0 else data.placeholder_color
 	draw_circle(Vector2.ZERO, data.radius, body_color)
 	draw_arc(Vector2.ZERO, data.radius, 0.0, TAU, 24, Color(0.9, 0.15, 0.2), 2.0)
+	if data.show_health_bar:
+		var bar := Rect2(-data.radius, -data.radius - 14.0, data.radius * 2.0, 6.0)
+		draw_rect(bar, Color(0, 0, 0, 0.6))
+		bar.size.x *= maxf(health, 0.0) / data.max_health
+		draw_rect(bar, Color(0.9, 0.15, 0.2))

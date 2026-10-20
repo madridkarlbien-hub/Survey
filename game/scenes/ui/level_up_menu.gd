@@ -1,7 +1,7 @@
 # Author: Karl Bien Madrid
 class_name LevelUpMenu
 extends CanvasLayer
-## Pauses the game and offers random upgrades each time the player levels up.
+## Pauses the game and offers random upgrades on each level-up or Upgrade reward.
 ## Pick with the mouse, arrow keys + Enter, a gamepad, or the number keys 1-3.
 
 const CHOICE_COUNT := 3
@@ -11,7 +11,8 @@ const CHOICE_COUNT := 3
 var choices: Array[UpgradeData] = []
 
 var _player: Player
-var _pending := 0
+## One title per pick still waiting, e.g. two level-ups in a row.
+var _queue: Array[String] = []
 
 @onready var _title: Label = %Title
 @onready var _choice_list: VBoxContainer = %Choices
@@ -26,27 +27,36 @@ func connect_player(player: Player) -> void:
 	_player.leveled_up.connect(_on_player_leveled_up)
 
 
+## A free pick, e.g. from an Upgrade room reward.
+func offer_upgrade() -> void:
+	_queue_pick("Reward! Choose an upgrade")
+
+
 func choose(index: int) -> void:
 	_player.apply_upgrade(choices[index])
-	_pending -= 1
-	if _pending > 0:
-		_open()
-	else:
+	_queue.pop_front()
+	if _queue.is_empty():
 		hide()
 		get_tree().paused = false
+	else:
+		_open()
 
 
 func _on_player_leveled_up(_new_level: int) -> void:
-	_pending += 1
+	_queue_pick("Level up! Choose an upgrade")
+
+
+func _queue_pick(title: String) -> void:
+	_queue.append(title)
 	if not visible:
 		_open()
 
 
 func _open() -> void:
 	get_tree().paused = true
-	_title.text = "Level up! Choose an upgrade"
-	if _pending > 1:
-		_title.text += " (%d more after this)" % (_pending - 1)
+	_title.text = _queue[0]
+	if _queue.size() > 1:
+		_title.text += " (%d more after this)" % (_queue.size() - 1)
 
 	choices = upgrade_pool.upgrades.duplicate()
 	choices.shuffle()

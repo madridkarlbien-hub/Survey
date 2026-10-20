@@ -18,13 +18,19 @@ func _run() -> void:
 		if not (file.begins_with("test_") and file.ends_with(".gd")):
 			continue
 		var script: GDScript = load(TEST_DIR + file)
+		if script == null or not script.can_instantiate():
+			failed.append(file)
+			print("  FAIL  ", file, " could not be loaded (see errors above)")
+			continue
 		var seen := {}
 		for method in script.get_script_method_list():
 			var test_name: String = method.name
 			if not test_name.begins_with("test_") or seen.has(test_name):
 				continue
 			seen[test_name] = true
-			var test: TestCase = script.new()
+			# Untyped on purpose: naming TestCase here would compile the tests
+			# before autoloads such as RunState exist.
+			var test = script.new()
 			test.tree = self
 			await test.call(test_name)
 			await test.cleanup()

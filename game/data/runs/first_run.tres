@@ -1,0 +1,22 @@
+[gd_resource type="Resource" script_class="RunData" format=3]
+
+[ext_resource type="Script" path="res://data/runs/run_data.gd" id="1_run"]
+[ext_resource type="Script" path="res://data/rooms/room_data.gd" id="2_room"]
+[ext_resource type="Script" path="res://data/rewards/reward_data.gd" id="3_reward"]
+[ext_resource type="Resource" path="res://data/rooms/swarm_clearing.tres" id="4_swarm"]
+[ext_resource type="Resource" path="res://data/rooms/haunted_grove.tres" id="5_grove"]
+[ext_resource type="Resource" path="res://data/rooms/narrow_pass.tres" id="6_pass"]
+[ext_resource type="Resource" path="res://data/rooms/boss_lair.tres" id="7_boss"]
+[ext_resource type="Resource" path="res://data/rewards/upgrade.tres" id="8_upgrade"]
+[ext_resource type="Resource" path="res://data/rewards/heal.tres" id="9_heal"]
+[ext_resource type="Resource" path="res://data/rewards/bonus_xp.tres" id="10_xp"]
+
+[resource]
+script = ExtResource("1_run")
+room_pool = Array[ExtResource("2_room")]([ExtResource("4_swarm"), ExtResource("5_grove"), ExtResource("6_pass")])
+rooms_before_boss = 6
+boss_room = ExtResource("7_boss")
+reward_pool = Array[ExtResource("3_reward")]([ExtResource("8_upgrade"), ExtResource("9_heal"), ExtResource("10_xp")])
+difficulty_per_room = 0.2
+min_doors = 2
+max_doors = 3
