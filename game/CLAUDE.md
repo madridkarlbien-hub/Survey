@@ -73,7 +73,7 @@
 | `scenes/enemies/` | Enemy scene (chases the player) and `WaveSpawner` (spawns just off-screen, capped at 300) |
 | `scenes/attacks/` | `Shockwave`: Tikbalang's stomp, uses the `attack_*` stats |
 | `scenes/pickups/` | `XpOrb`: dropped by enemies, flies to the player within `pickup_radius` |
-| `scenes/ui/` | HUD (XP bar, level, HP, room, objective, banner) and `LevelUpMenu` (pauses, pick 1 of 3; queues level-ups and Upgrade rewards) |
+| `scenes/ui/` | HUD (XP bar top, level + room top-left, HP bar bottom-left, objective, banner) and `LevelUpMenu` (pauses, pick 1 of 3; queues level-ups and Upgrade rewards) |
 | `tests/` | Automated tests: `test_*.gd` files, base class in `tests/framework/test_case.gd`, test-only data in `tests/fixtures/` |
 | `tools/` | `run_tests.sh`, `take_screenshots.sh`, `get_godot.sh` (Linux/cloud only) |
 | `screenshots/` | Latest screenshots of key moments (has `.gdignore`, so Godot skips it) |

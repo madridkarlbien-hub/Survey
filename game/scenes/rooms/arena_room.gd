@@ -36,6 +36,8 @@ var _time_in_room := 0.0
 @onready var _spawner: WaveSpawner = $WaveSpawner
 @onready var _xp_bar: ProgressBar = $HUD/XpBar
 @onready var _stats_label: Label = $HUD/Stats
+@onready var _hp_bar: ProgressBar = $HUD/HpBar
+@onready var _hp_text: Label = $HUD/HpBar/HpText
 @onready var _objective_label: Label = $HUD/Objective
 @onready var _banner_label: Label = $HUD/Banner
 @onready var _level_up_menu: LevelUpMenu = $LevelUpMenu
@@ -155,8 +157,10 @@ func _show_banner(text: String, hide_after := 0.0) -> void:
 func _update_hud() -> void:
 	_xp_bar.max_value = _player.xp_to_next_level()
 	_xp_bar.value = _player.xp
-	_stats_label.text = "Lv %d    HP %d/%d    Room %s" % [
-		_player.level, _player.health, _player.character.max_health, _room_label]
+	_hp_bar.max_value = _player.character.max_health
+	_hp_bar.value = _player.health
+	_hp_text.text = "HP %d / %d" % [_player.health, _player.character.max_health]
+	_stats_label.text = "Lv %d    Room %s" % [_player.level, _room_label]
 	_objective_label.text = _objective_text()
 
 

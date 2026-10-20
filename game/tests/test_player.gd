@@ -38,3 +38,14 @@ func test_xp_levels_up() -> void:
 	player.add_xp(1)
 	check_eq(player.level, 2, "level after reaching the threshold")
 	check_eq(player.xp, 0, "leftover XP")
+
+
+func test_hp_bar_shows_health() -> void:
+	var room := await start_quiet_room()
+	var player: Player = room.get_node("Player")
+	player.take_damage(20)
+	await wait_frames(2) # the HUD refreshes once per frame
+	var bar: ProgressBar = room.get_node("HUD/HpBar")
+	check_eq(bar.max_value, float(player.character.max_health), "HP bar maximum")
+	check_eq(bar.value, float(player.health), "HP bar value after a hit")
+	check_eq(room.get_node("HUD/HpBar/HpText").text, "HP 70 / 90", "HP bar text")
