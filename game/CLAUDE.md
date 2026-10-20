@@ -95,6 +95,7 @@
 - Shockwave: 10 damage, 110 radius, every 1.5 s (floor 0.3 s); placeholder enemy has 10 HP, so it dies in one hit
 - Boss: 300 HP, 15 contact damage, 85% knockback resistance; boss room doesn't scale with depth
 - Rewards: Heal 30 HP, Bonus XP 12, Upgrade = 1 free pick
+- Bot full run (unbeatable player standing still, always first upgrade/door): rooms ~42-45 s each, whole run ~5:15, reached Lv 18. Leveling looks fast and room times look flat across depth; needs a human to judge
 
 ## Open Decisions
 1. [x] Choose the game engine and programming language: Godot 4 + GDScript
