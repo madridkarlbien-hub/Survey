@@ -1,0 +1,29 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scenes/hub/deity_statue.gd" id="1_script"]
+
+[node name="DeityStatue" type="StaticBody2D"]
+script = ExtResource("1_script")
+
+[node name="Name" type="Label" parent="."]
+offset_left = -120.0
+offset_top = 42.0
+offset_right = 120.0
+offset_bottom = 70.0
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 6
+theme_override_font_sizes/font_size = 22
+text = "Deity"
+horizontal_alignment = 1
+
+[node name="Domain" type="Label" parent="."]
+modulate = Color(1, 1, 1, 0.7)
+offset_left = -120.0
+offset_top = 68.0
+offset_right = 120.0
+offset_bottom = 92.0
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 4
+theme_override_font_sizes/font_size = 16
+text = "Domain"
+horizontal_alignment = 1

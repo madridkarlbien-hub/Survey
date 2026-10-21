@@ -12,6 +12,8 @@ const BODY_RADIUS := 16.0
 const INVULNERABLE_TIME := 0.5
 ## Upgrades can never make the attack faster than this.
 const MIN_ATTACK_COOLDOWN := 0.3
+## Seconds of safety after Second Life brings you back.
+const REVIVE_SAFE_TIME := 2.0
 const FIRE_PATCH_SCENE := preload("res://scenes/attacks/fire_patch.tscn")
 ## Blazing Trail: seconds between fire patches while moving.
 const FIRE_PATCH_INTERVAL := 0.3
@@ -34,6 +36,7 @@ var _fire_patch_left := 0.0
 func _ready() -> void:
 	# Work on a copy, so upgrades during a run never change the saved .tres file.
 	character = character.duplicate()
+	_apply_shrine_upgrades()
 	health = character.max_health
 
 
@@ -60,6 +63,12 @@ func take_damage(amount: int) -> void:
 	_invulnerable_left = invulnerable_time()
 	if health == 0:
 		died.emit()
+
+
+## Second Life: come back from defeat with this share of max HP, briefly safe.
+func revive(health_share: float) -> void:
+	health = maxi(1, int(character.max_health * health_share))
+	_invulnerable_left = REVIVE_SAFE_TIME
 
 
 func heal(amount: int) -> void:
@@ -113,6 +122,13 @@ func register_kill() -> void:
 	var rain := get_boon("cleansing_rain")
 	if rain and kills % rain.count == 0:
 		heal(int(rain.power))
+
+
+## Permanent upgrades bought at Bathala's shrine.
+func _apply_shrine_upgrades() -> void:
+	character.max_health += int(SaveData.bonus("max_health"))
+	character.attack_damage += SaveData.bonus("attack_damage")
+	character.move_speed += SaveData.bonus("move_speed")
 
 
 func _drop_fire(delta: float) -> void:

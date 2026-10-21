@@ -5,6 +5,9 @@ extends CharacterBody2D
 ## Can be burned, slowed and knocked back by boons. Drops an XP orb when defeated.
 
 const XP_ORB_SCENE := preload("res://scenes/pickups/xp_orb.tscn")
+const DIWA_GEM_SCENE := preload("res://scenes/pickups/diwa_gem.tscn")
+## Diwa lands a little to the side, so it doesn't hide under the XP orb.
+const DIWA_DROP_OFFSET := Vector2(10, -8)
 ## How fast knockback wears off (pixels per second, per second).
 const KNOCKBACK_DECAY := 1200.0
 ## Knockback slower than this no longer counts as "thrown" (for Riptide).
@@ -114,11 +117,17 @@ func _check_wall_slam() -> void:
 func _die() -> void:
 	if target is Player:
 		target.register_kill()
-	var orb: XpOrb = XP_ORB_SCENE.instantiate()
-	orb.value = data.xp_value
-	orb.position = position
-	get_parent().add_child.call_deferred(orb)
+	_drop(XP_ORB_SCENE, data.xp_value, Vector2.ZERO)
+	if randf() < data.diwa_chance + SaveData.bonus("diwa_chance"):
+		_drop(DIWA_GEM_SCENE, data.diwa_amount, DIWA_DROP_OFFSET)
 	queue_free()
+
+
+func _drop(scene: PackedScene, value: int, offset: Vector2) -> void:
+	var pickup: XpOrb = scene.instantiate()
+	pickup.value = value
+	pickup.position = position + offset
+	get_parent().add_child.call_deferred(pickup)
 
 
 func _draw() -> void:

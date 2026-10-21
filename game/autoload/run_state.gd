@@ -12,6 +12,9 @@ var room_number := 0
 var current_room: RoomData
 ## Granted when the current room is cleared. Null in the first room.
 var pending_reward: RewardData
+## Diwa collected this run (it's added to SaveData as it's picked up).
+var run_diwa := 0
+var second_life_used := false
 
 var _saved_player := {}
 
@@ -24,6 +27,8 @@ func start_run(run_data: RunData = DEFAULT_RUN) -> void:
 	run = run_data
 	room_number = 1
 	pending_reward = null
+	run_diwa = 0
+	second_life_used = false
 	_saved_player = {}
 	current_room = _pick_room(null)
 

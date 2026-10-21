@@ -1,8 +1,9 @@
 # Author: Karl Bien Madrid
 extends SceneTree
-## A bot that plays one full run (6 rooms + boss) with an unbeatable player,
-## saving screenshots of key moments to game/screenshots/ and printing how long
-## each room took. Start it with tools/take_screenshots.sh.
+## A bot that starts in the hub, plays one full run (6 rooms + boss) with an
+## unbeatable player, returns to the hub and spends its Diwa at Bathala's shrine.
+## Saves screenshots of key moments to game/screenshots/ and prints how long
+## each room took. Uses its own save file. Start it with tools/take_screenshots.sh.
 ## The player stands still and lets the shockwave do the work; after each room
 ## it walks into a boon door when there is one (else the first door) and always
 ## takes the first choice offered.
@@ -18,6 +19,8 @@ var _room: Node
 var _room_frames := 0
 var _cleared_frames := 0
 var _log: Array[String] = []
+var _hub_visits := 0
+var _hub_frames := 0
 
 
 func _initialize() -> void:
@@ -25,14 +28,20 @@ func _initialize() -> void:
 	for file in DirAccess.get_files_at(OUT_DIR):
 		if file.ends_with(".png"):
 			DirAccess.remove_absolute(ProjectSettings.globalize_path(OUT_DIR + file))
-	var first_room: Node = load("res://scenes/rooms/arena_room.tscn").instantiate()
-	root.add_child(first_room)
-	current_scene = first_room
+	var save_data := root.get_node("SaveData")
+	save_data.save_path = "user://bot_save.json"
+	save_data.reset()
+	var hub: Node = load("res://scenes/hub/hub.tscn").instantiate()
+	root.add_child(hub)
+	current_scene = hub
 
 
 func _process(_delta: float) -> bool:
 	_frames += 1
 	if _busy or current_scene == null or not current_scene.has_node("Player"):
+		return false
+	if current_scene.name == &"Hub":
+		_in_hub(current_scene)
 		return false
 	if current_scene != _room:
 		_enter_room(current_scene)
@@ -45,7 +54,11 @@ func _process(_delta: float) -> bool:
 	if menu.visible:
 		_pick_upgrade(menu)
 	elif _room.state == _room.State.OVER and _room.get_node("HUD/Banner").text.begins_with("Victory"):
-		_finish()
+		if not _taken.has("07_victory"):
+			_log.append("Boss room  %.1fs" % (_room_frames / FPS))
+			_log.append("Boons: %s" % [player.boons.map(func(boon: BoonData) -> String: return boon.display_name)])
+			_log.append("Diwa this run: %d" % _run_state().run_diwa)
+		_shoot_once("07_victory")
 	elif _room.state == _room.State.CLEARED:
 		_handle_cleared(player)
 	elif _room_frames == 30 and _run_state().room_number == 1:
@@ -68,6 +81,47 @@ func _process(_delta: float) -> bool:
 ## Autoloads can't be named directly in a -s script, so look it up instead.
 func _run_state() -> Node:
 	return root.get_node("RunState")
+
+
+func _in_hub(hub: Node) -> void:
+	if hub != _room:
+		_room = hub
+		_hub_visits += 1
+		_hub_frames = 0
+	_hub_frames += 1
+	var player: Player = hub.get_node("Player")
+	if _hub_visits == 1:
+		if _hub_frames == 30:
+			_shoot_once("10_hub")
+		elif _hub_frames == 40:
+			player.global_position = hub.get_node("RunGate").global_position
+	elif _hub_frames == 30:
+		player.global_position = hub.get_node("Bathala").global_position + Vector2(0, 90)
+	elif _hub_frames == 40:
+		_shoot_once("11_hub_near_bathala")
+	elif _hub_frames == 50:
+		hub.get_node("ShrineMenu").open()
+	elif _hub_frames == 60:
+		_shop(hub.get_node("ShrineMenu"))
+
+
+func _shop(shrine: ShrineMenu) -> void:
+	_busy = true
+	await _shoot("12_shrine_before")
+	# Buy the cheapest affordable level until nothing more is affordable.
+	var save_data := root.get_node("SaveData")
+	var bought: Array[String] = []
+	var spent := true
+	while spent:
+		spent = false
+		for i in save_data.SHRINE.upgrades.size():
+			if shrine.buy(i):
+				bought.append(save_data.SHRINE.upgrades[i].display_name)
+				spent = true
+				break
+	await _shoot("13_shrine_after")
+	_log.append("Shrine: bought %s, %d Diwa left" % [bought, save_data.diwa])
+	_finish()
 
 
 func _enter_room(room: Node) -> void:
@@ -119,12 +173,8 @@ func _pick_upgrade(menu: LevelUpMenu) -> void:
 
 func _finish() -> void:
 	_busy = true
-	if not _taken.has("07_victory"):
-		await _shoot("07_victory")
 	print("\n".join(_log))
-	var player: Player = _room.get_node("Player")
-	print("Boons: ", player.boons.map(func(boon: BoonData) -> String: return boon.display_name))
-	print("Total run time: %.1f s" % (_frames / FPS))
+	print("Total time: %.1f s" % (_frames / FPS))
 	print("Saved: ", _taken.keys())
 	quit()
 

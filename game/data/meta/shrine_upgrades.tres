@@ -1,0 +1,56 @@
+[gd_resource type="Resource" script_class="MetaUpgradePool" format=3]
+
+[ext_resource type="Script" path="res://data/meta/meta_upgrade_pool.gd" id="1_pool"]
+[ext_resource type="Script" path="res://data/meta/meta_upgrade_data.gd" id="2_upgrade"]
+
+[sub_resource type="Resource" id="Tibay"]
+script = ExtResource("2_upgrade")
+display_name = "Tibay (Toughness)"
+description = "+10 max HP per level"
+effect = "max_health"
+amount_per_level = 10.0
+costs = Array[int]([10, 20, 35, 55, 80])
+
+[sub_resource type="Resource" id="Lakas"]
+script = ExtResource("2_upgrade")
+display_name = "Lakas (Strength)"
+description = "+2 shockwave damage per level"
+effect = "attack_damage"
+amount_per_level = 2.0
+costs = Array[int]([15, 30, 50, 75, 110])
+
+[sub_resource type="Resource" id="Bilis"]
+script = ExtResource("2_upgrade")
+display_name = "Bilis (Swiftness)"
+description = "+10 move speed per level"
+effect = "move_speed"
+amount_per_level = 10.0
+costs = Array[int]([10, 25, 45])
+
+[sub_resource type="Resource" id="Biyaya"]
+script = ExtResource("2_upgrade")
+display_name = "Biyaya (Grace)"
+description = "Heal 10 HP per level when a room is cleared"
+effect = "room_clear_heal"
+amount_per_level = 10.0
+costs = Array[int]([20, 40, 70])
+
+[sub_resource type="Resource" id="Kapalaran"]
+script = ExtResource("2_upgrade")
+display_name = "Kapalaran (Fortune)"
+description = "+10% chance per level that enemies drop Diwa"
+effect = "diwa_chance"
+amount_per_level = 0.1
+costs = Array[int]([15, 35, 60])
+
+[sub_resource type="Resource" id="Pangalawang_Buhay"]
+script = ExtResource("2_upgrade")
+display_name = "Pangalawang Buhay (Second Life)"
+description = "Once per run, come back with 30% HP when defeated"
+effect = "second_life"
+amount_per_level = 0.3
+costs = Array[int]([150])
+
+[resource]
+script = ExtResource("1_pool")
+upgrades = Array[ExtResource("2_upgrade")]([SubResource("Tibay"), SubResource("Lakas"), SubResource("Bilis"), SubResource("Biyaya"), SubResource("Kapalaran"), SubResource("Pangalawang_Buhay")])

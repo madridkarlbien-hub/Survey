@@ -30,8 +30,12 @@ func _physics_process(delta: float) -> void:
 		return
 	global_position = global_position.move_toward(_player.global_position, FLY_SPEED * delta)
 	if global_position.distance_to(_player.global_position) <= COLLECT_DISTANCE:
-		_player.add_xp(value)
+		_collect()
 		queue_free()
+
+
+func _collect() -> void:
+	_player.add_xp(value)
 
 
 func _draw() -> void:

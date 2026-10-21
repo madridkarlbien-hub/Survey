@@ -1,0 +1,101 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scenes/hub/hub.gd" id="1_hub"]
+[ext_resource type="PackedScene" path="res://scenes/player/player.tscn" id="2_player"]
+[ext_resource type="PackedScene" path="res://scenes/hub/deity_statue.tscn" id="3_statue"]
+[ext_resource type="PackedScene" path="res://scenes/hub/run_gate.tscn" id="4_gate"]
+[ext_resource type="PackedScene" path="res://scenes/hub/shrine_menu.tscn" id="5_shrine"]
+[ext_resource type="Resource" path="res://data/deities/bathala.tres" id="6_bathala"]
+[ext_resource type="Resource" path="res://data/deities/apolaki.tres" id="7_apolaki"]
+[ext_resource type="Resource" path="res://data/deities/mayari.tres" id="8_mayari"]
+[ext_resource type="Resource" path="res://data/deities/amanikable.tres" id="9_amanikable"]
+[ext_resource type="Resource" path="res://data/deities/anitun_tabu.tres" id="10_anitun_tabu"]
+
+[node name="Hub" type="Node2D"]
+script = ExtResource("1_hub")
+
+[node name="RunGate" parent="." instance=ExtResource("4_gate")]
+position = Vector2(0, -420)
+
+[node name="Bathala" parent="." instance=ExtResource("3_statue")]
+position = Vector2(0, -150)
+deity = ExtResource("6_bathala")
+
+[node name="Apolaki" parent="." instance=ExtResource("3_statue")]
+position = Vector2(-520, -160)
+deity = ExtResource("7_apolaki")
+
+[node name="Mayari" parent="." instance=ExtResource("3_statue")]
+position = Vector2(-520, 180)
+deity = ExtResource("8_mayari")
+
+[node name="Amanikable" parent="." instance=ExtResource("3_statue")]
+position = Vector2(520, -160)
+deity = ExtResource("9_amanikable")
+
+[node name="AnitunTabu" parent="." instance=ExtResource("3_statue")]
+position = Vector2(520, 180)
+deity = ExtResource("10_anitun_tabu")
+
+[node name="Player" parent="." instance=ExtResource("2_player")]
+position = Vector2(0, 300)
+
+[node name="HubHUD" type="CanvasLayer" parent="."]
+
+[node name="Title" type="Label" parent="HubHUD"]
+anchors_preset = 10
+anchor_right = 1.0
+offset_top = 14.0
+offset_bottom = 54.0
+grow_horizontal = 2
+theme_override_colors/font_color = Color(1, 0.95, 0.75, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 6
+theme_override_font_sizes/font_size = 28
+text = "Kaluwalhatian  -  Realm of the Gods"
+horizontal_alignment = 1
+
+[node name="Record" type="Label" parent="HubHUD"]
+offset_left = 16.0
+offset_top = 16.0
+offset_right = 400.0
+offset_bottom = 52.0
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 6
+theme_override_font_sizes/font_size = 22
+text = "Runs 0    Wins 0"
+
+[node name="Diwa" type="Label" parent="HubHUD"]
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -216.0
+offset_top = 16.0
+offset_right = -16.0
+offset_bottom = 52.0
+grow_horizontal = 0
+theme_override_colors/font_color = Color(0.8, 0.6, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 6
+theme_override_font_sizes/font_size = 24
+text = "Diwa 0"
+horizontal_alignment = 2
+
+[node name="Prompt" type="Label" parent="HubHUD"]
+visible = false
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -70.0
+offset_bottom = -30.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_colors/font_color = Color(1, 0.95, 0.75, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 6
+theme_override_font_sizes/font_size = 24
+text = "Press E to speak with Bathala"
+horizontal_alignment = 1
+
+[node name="ShrineMenu" parent="." instance=ExtResource("5_shrine")]

@@ -17,3 +17,6 @@ extends Resource
 @export_range(0.0, 1.0) var knockback_resistance: float = 0.0
 ## Draw a health bar above this enemy (for bosses).
 @export var show_health_bar: bool = false
+## Chance (0-1) to also drop Diwa when defeated.
+@export_range(0.0, 1.0) var diwa_chance: float = 0.08
+@export var diwa_amount: int = 1

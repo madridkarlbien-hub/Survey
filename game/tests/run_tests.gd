@@ -12,6 +12,10 @@ func _initialize() -> void:
 
 func _run() -> void:
 	seed(12345)
+	# Tests use their own save file, so they never touch real progress.
+	var save_data := root.get_node("SaveData")
+	save_data.save_path = "user://test_save.json"
+	save_data.reset()
 	var passed := 0
 	var failed: Array[String] = []
 	for file in DirAccess.get_files_at(TEST_DIR):

@@ -3,11 +3,15 @@ extends Node2D
 ## One combat room of a run. Its size, waves and clear rule come from the
 ## current RoomData in RunState. When cleared, it grants the room's reward and
 ## opens doors to the next room. Clearing the boss room wins the run.
+## When the run ends (victory or defeat), it returns to the hub.
 
 const ROOM_SCENE := "res://scenes/rooms/arena_room.tscn"
+const HUB_SCENE := "res://scenes/hub/hub.tscn"
 const DOOR_SCENE := preload("res://scenes/rooms/door.tscn")
-const RESTART_DELAY := 2.0
+const RESTART_DELAY := 2.5
 const VICTORY_DELAY := 4.0
+## Second Life brings you back with this share of max HP.
+const SECOND_LIFE_HEALTH := 0.3
 const CLEARED_BANNER_TIME := 1.5
 const DOOR_SPACING := 240.0
 ## How far below the top wall the doors appear.
@@ -39,6 +43,7 @@ var _time_in_room := 0.0
 @onready var _hp_bar: ProgressBar = $HUD/HpBar
 @onready var _hp_text: Label = $HUD/HpBar/HpText
 @onready var _boon_label: Label = $HUD/Boons
+@onready var _diwa_label: Label = $HUD/Diwa
 @onready var _objective_label: Label = $HUD/Objective
 @onready var _banner_label: Label = $HUD/Banner
 @onready var _level_up_menu: LevelUpMenu = $LevelUpMenu
@@ -87,7 +92,9 @@ func _clear_room() -> void:
 		enemy.queue_free()
 	for orb: XpOrb in get_tree().get_nodes_in_group("xp_orbs"):
 		orb.attract()
+	_player.heal(int(SaveData.bonus("room_clear_heal")))
 	_grant_reward(RunState.pending_reward)
+	SaveData.save_game()
 	if _is_boss_room:
 		_win_run()
 		return
@@ -132,20 +139,30 @@ func _on_door_entered(reward: RewardData) -> void:
 
 func _win_run() -> void:
 	state = State.OVER
-	_show_banner("Victory!\nRun complete")
-	RunState.end_run()
-	await get_tree().create_timer(VICTORY_DELAY).timeout
-	get_tree().reload_current_scene()
+	SaveData.wins += 1
+	_end_run("Victory!\nRun complete", VICTORY_DELAY)
 
 
 func _on_player_died() -> void:
+	if SaveData.level_of("second_life") > 0 and not RunState.second_life_used:
+		RunState.second_life_used = true
+		_player.revive(SECOND_LIFE_HEALTH)
+		_show_banner("Bathala grants you a second life!", CLEARED_BANNER_TIME)
+		return
 	state = State.OVER
 	_player.set_physics_process(false)
 	_spawner.stop()
-	_show_banner("Defeated!\nRestarting...")
+	_end_run("Defeated!", RESTART_DELAY)
+
+
+## Record the run, show the result, then return to the hub.
+func _end_run(title: String, delay: float) -> void:
+	SaveData.runs += 1
+	SaveData.save_game()
+	_show_banner("%s\n+%d Diwa" % [title, RunState.run_diwa])
 	RunState.end_run()
-	await get_tree().create_timer(RESTART_DELAY).timeout
-	get_tree().reload_current_scene()
+	await get_tree().create_timer(delay).timeout
+	get_tree().change_scene_to_file(HUB_SCENE)
 
 
 func _show_banner(text: String, hide_after := 0.0) -> void:
@@ -164,6 +181,7 @@ func _update_hud() -> void:
 	_hp_bar.value = _player.health
 	_hp_text.text = "HP %d / %d" % [_player.health, _player.character.max_health]
 	_stats_label.text = "Lv %d    Room %s" % [_player.level, _room_label]
+	_diwa_label.text = "Diwa %d" % SaveData.diwa
 	_boon_label.text = "\n".join(_player.boons.map(func(boon: BoonData) -> String: return boon.display_name))
 	_objective_label.text = _objective_text()
 
@@ -184,25 +202,8 @@ func _objective_text() -> String:
 
 
 func _build_walls() -> void:
-	var half := _room_size / 2.0
-	var t := wall_thickness
-	_add_wall(Rect2(-half.x - t, -half.y - t, _room_size.x + t * 2, t)) # top
-	_add_wall(Rect2(-half.x - t, half.y, _room_size.x + t * 2, t)) # bottom
-	_add_wall(Rect2(-half.x - t, -half.y, t, _room_size.y)) # left
-	_add_wall(Rect2(half.x, -half.y, t, _room_size.y)) # right
+	_wall_rects = RoomWalls.build(self, _room_size, wall_thickness)
 	queue_redraw()
-
-
-func _add_wall(rect: Rect2) -> void:
-	var shape := RectangleShape2D.new()
-	shape.size = rect.size
-	var collision := CollisionShape2D.new()
-	collision.shape = shape
-	var body := StaticBody2D.new()
-	body.position = rect.get_center()
-	body.add_child(collision)
-	add_child(body)
-	_wall_rects.append(rect)
 
 
 func _draw() -> void:

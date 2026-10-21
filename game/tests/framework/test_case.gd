@@ -9,6 +9,7 @@ const ROOM_SCENE := "res://scenes/rooms/arena_room.tscn"
 const ENDLESS_ROOM := "res://tests/fixtures/endless_room.tres"
 const ENEMY_SCENE := "res://scenes/enemies/enemy.tscn"
 const PLACEHOLDER_ENEMY := "res://data/enemies/corrupted_spirit.tres"
+const HUB_SCENE := "res://scenes/hub/hub.tscn"
 
 var tree: SceneTree
 var failures: Array[String] = []
@@ -29,9 +30,20 @@ func check_eq(actual: Variant, expected: Variant, message: String) -> void:
 ## Start a fresh run and load a room as the running scene, like pressing F5.
 ## Uses the endless test room unless `room_data` is given.
 func start_room(room_data: RoomData = null) -> Node:
+	SaveData.reset() # no permanent upgrades unless a test buys them
 	RunState.start_run()
 	RunState.current_room = room_data if room_data else load(ENDLESS_ROOM)
 	_room = load(ROOM_SCENE).instantiate()
+	tree.root.add_child(_room)
+	tree.current_scene = _room
+	await wait_frames(1)
+	return _room
+
+
+## Load the hub (realm of the gods) as the running scene.
+func start_hub() -> Node:
+	SaveData.reset()
+	_room = load(HUB_SCENE).instantiate()
 	tree.root.add_child(_room)
 	tree.current_scene = _room
 	await wait_frames(1)

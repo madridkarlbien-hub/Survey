@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="DeityData" format=3]
+
+[ext_resource type="Script" path="res://data/deities/deity_data.gd" id="1_deity"]
+
+[resource]
+script = ExtResource("1_deity")
+display_name = "Bathala"
+domain = "Supreme god and creator"
+color = Color(1, 0.95, 0.75, 1)

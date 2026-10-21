@@ -1,0 +1,6 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scenes/pickups/diwa_gem.gd" id="1_script"]
+
+[node name="DiwaGem" type="Node2D" groups=["diwa_gems", "xp_orbs"]]
+script = ExtResource("1_script")
