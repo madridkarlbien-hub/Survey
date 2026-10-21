@@ -23,3 +23,12 @@ static func build(parent: Node2D, room_size: Vector2, thickness: float) -> Array
 		body.add_child(collision)
 		parent.add_child(body)
 	return rects
+
+
+## Stop `camera` at the outer edge of the walls, so the void beyond never shows.
+static func limit_camera(camera: Camera2D, room_size: Vector2, thickness: float) -> void:
+	var half := room_size / 2.0 + Vector2(thickness, thickness)
+	camera.limit_left = int(-half.x)
+	camera.limit_top = int(-half.y)
+	camera.limit_right = int(half.x)
+	camera.limit_bottom = int(half.y)

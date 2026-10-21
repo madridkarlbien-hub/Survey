@@ -29,6 +29,9 @@ var _stars: Array[Vector2] = []
 func _ready() -> void:
 	RunState.end_run()
 	_wall_rects = RoomWalls.build(self, ROOM_SIZE, WALL_THICKNESS)
+	RoomWalls.limit_camera(_player.get_node("Camera2D"), ROOM_SIZE, WALL_THICKNESS)
+	# The hub is paused while the shrine is open, so hide the prompt right away.
+	_shrine_menu.visibility_changed.connect(func() -> void: _prompt.visible = false)
 	# No fighting in the realm of the gods.
 	var shockwave := _player.get_node("Shockwave")
 	shockwave.process_mode = Node.PROCESS_MODE_DISABLED

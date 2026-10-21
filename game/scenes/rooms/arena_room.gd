@@ -203,6 +203,7 @@ func _objective_text() -> String:
 
 func _build_walls() -> void:
 	_wall_rects = RoomWalls.build(self, _room_size, wall_thickness)
+	RoomWalls.limit_camera(_player.get_node("Camera2D"), _room_size, wall_thickness)
 	queue_redraw()
 
 

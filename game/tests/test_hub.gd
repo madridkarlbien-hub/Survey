@@ -31,6 +31,21 @@ func test_shrine_prompt_only_near_bathala() -> void:
 	check(prompt.visible, "prompt should show next to Bathala")
 
 
+func test_prompt_hides_while_shrine_is_open() -> void:
+	var hub := await start_hub()
+	hub.get_node("Player").global_position = hub.get_node("Bathala").global_position + Vector2(0, 80)
+	await wait_frames(2)
+	hub.get_node("ShrineMenu").open()
+	check(not hub.get_node("HubHUD/Prompt").visible, "prompt should hide behind the shrine menu")
+
+
+func test_camera_stays_inside_the_hub() -> void:
+	var hub := await start_hub()
+	var camera: Camera2D = hub.get_node("Player/Camera2D")
+	check_eq(camera.limit_bottom, 532, "camera stops at the bottom wall (500 + 32)")
+	check_eq(camera.limit_left, -832, "camera stops at the left wall (800 + 32)")
+
+
 func test_shrine_buys_upgrades() -> void:
 	var hub := await start_hub()
 	var shrine: ShrineMenu = hub.get_node("ShrineMenu")
