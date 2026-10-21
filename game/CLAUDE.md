@@ -55,7 +55,7 @@
 - Karl is NOT play-testing for now (company laptop). Claude verifies every change itself:
   1. `bash tools/run_tests.sh` - all tests must pass (also runs on GitHub on every push)
   2. `bash tools/take_screenshots.sh` - a bot plays a full run (unbeatable player), prints each room's time, and saves `screenshots/*.png`; look at them and report what they show
-- Gotcha: scripts run with `-s` (test runner, screenshot bot) can't name autoloads like `RunState` directly; look them up with `root.get_node("RunState")` or keep the reference untyped
+- Gotcha: scripts run with `-s` can't compile anything that names autoloads (`RunState`, `SaveData`), and almost all game scripts do. So `-s` entry points stay tiny and load the real code one frame later: the test runner keeps tests untyped, and `tools/screenshots.gd` loads `tools/screenshot_bot.gd` deferred
 - Add or update tests in `tests/` with every new feature
 - Claude can check logic and bugs; only Karl can judge fun, feel, and difficulty - flag those as open questions
 
