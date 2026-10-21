@@ -94,7 +94,12 @@
 4. [x] Rooms: 6 rooms + boss per run, DEFEAT_ALL or SURVIVE clear rules, 2-3 reward doors, stats carry over, victory on boss clear
 5. [x] Boons: 4 Filipino deities x 3 boons, offered by boon doors; elements stack
 6. [x] Hub: Kaluwalhatian (realm of the gods), Bathala's shrine with 6 permanent upgrades, Diwa currency, saved progress
-7. [ ] Next: to be decided (ideas: real enemies, more creatures, deity dialogue, balance pass, 2D art pass)
+7. [ ] Real enemies (corrupted folklore beings with distinct behaviors) + a real boss
+8. [ ] Balance pass (run is easy and short)
+9. [ ] Start the 2D art pass (Hades-style sprites, lighting, particles)
+10. [ ] More playable characters (from Karl's finished designs)
+11. [ ] Deity dialogue in the hub
+(Order set by Karl on 2026-10-21.)
 
 ## Balance Notes (untested by a human)
 - XP to next level: 5, 8, 11, 14... (`Player.xp_to_next_level`)
