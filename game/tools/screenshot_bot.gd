@@ -72,6 +72,10 @@ func _process(_delta: float) -> void:
 		_shoot_once("06_boss")
 	elif player.boons.size() >= 3 and seconds_in_room > 10.0 and _ring_visible(player):
 		_shoot_once("09_boons_in_action")
+	elif _run_state().room_number >= 3 and seconds_in_room > 14.0 and _enemies_near(player) >= 6:
+		_shoot_once("14_enemies_deeper")
+	elif _charge_warning_near(player):
+		_shoot_once("15_charge_warning")
 
 	if _frames / FPS > MAX_SECONDS:
 		_log.append("Stopped: time limit reached")
@@ -187,6 +191,19 @@ func _ring_visible(player: Player) -> bool:
 func _boss_near(player: Player) -> bool:
 	for enemy: Enemy in get_tree().get_nodes_in_group("enemies"):
 		if enemy.data.show_health_bar and enemy.global_position.distance_to(player.global_position) < 300.0:
+			return true
+	return false
+
+
+func _enemies_near(player: Player) -> int:
+	return get_tree().get_nodes_in_group("enemies").filter(func(enemy: Enemy) -> bool:
+		return enemy.global_position.distance_to(player.global_position) < 500.0).size()
+
+
+func _charge_warning_near(player: Player) -> bool:
+	for enemy: Enemy in get_tree().get_nodes_in_group("enemies"):
+		if (enemy.data.behavior == "charge" and enemy._act == Enemy.Act.WINDUP
+				and enemy.global_position.distance_to(player.global_position) < 400.0):
 			return true
 	return false
 
