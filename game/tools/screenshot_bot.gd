@@ -5,7 +5,8 @@ extends Node
 ## Saves screenshots of key moments to game/screenshots/ and prints how long
 ## each room took. Uses its own save file. Started by tools/screenshots.gd
 ## (run tools/take_screenshots.sh).
-## The player stands still and lets the shockwave do the work; after each room
+## The player walks toward the nearest enemy and lets the shockwave do the work
+## (shooters keep their distance, so standing still never clears a room); after each room
 ## it walks into a boon door when there is one (else the first door) and always
 ## takes the first choice offered.
 
@@ -52,6 +53,7 @@ func _process(_delta: float) -> void:
 	var seconds_in_room := _room_frames / FPS
 	player.health = player.character.max_health
 
+	_hunt(player)
 	if menu.visible:
 		_pick_upgrade(menu)
 	elif _room.state == _room.State.OVER and _room.get_node("HUD/Banner").text.begins_with("Victory"):
@@ -193,6 +195,27 @@ func _boss_near(player: Player) -> bool:
 		if enemy.data.show_health_bar and enemy.global_position.distance_to(player.global_position) < 300.0:
 			return true
 	return false
+
+
+## Walk toward the nearest enemy until it's inside the shockwave's reach.
+func _hunt(player: Player) -> void:
+	var nearest: Enemy = null
+	var best := INF
+	if _room.state == _room.State.FIGHTING:
+		for enemy: Enemy in get_tree().get_nodes_in_group("enemies"):
+			var distance := enemy.global_position.distance_to(player.global_position)
+			if distance < best:
+				nearest = enemy
+				best = distance
+	var direction := Vector2.ZERO
+	if nearest and best > player.character.attack_radius * 0.8:
+		direction = player.global_position.direction_to(nearest.global_position)
+	for action in ["move_left", "move_right", "move_up", "move_down"]:
+		Input.action_release(action)
+	if direction.x < -0.3: Input.action_press("move_left")
+	if direction.x > 0.3: Input.action_press("move_right")
+	if direction.y < -0.3: Input.action_press("move_up")
+	if direction.y > 0.3: Input.action_press("move_down")
 
 
 func _enemies_near(player: Player) -> int:
