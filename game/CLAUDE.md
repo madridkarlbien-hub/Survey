@@ -26,13 +26,16 @@
 | Structure | Hades structure (hub, rooms, boons, bosses) plus larger survivor-like enemy waves |
 | Setting | Filipino mythology and folklore |
 | Playable characters | Filipino mythological/folklore creatures (the playable characters, not the enemies) |
-| Enemies | Leaning toward corrupted/evil folklore beings (not final); placeholder "Corrupted Spirit" + placeholder boss "Corrupted Giant" |
+| Enemies | Karl's 8 "Evil" designs (corrupted versions of the heroes, red glowing cracks): Tyanak, Tikbalang, Kapre, Manananggal, White Lady, Nuno sa Punso, Diwata, Berberoka. Boss: serpent Bakunawa. ("Evil Bakunawa.png" upload is really Evil Berberoka.) |
+| Playable roster (later) | Karl's non-Evil designs: Aswang (Agila / Baboy Ramo / Lobo forms), Bakunawa, Berberoka, Bungisngis, Diwata, Kapre, Manananggal, Nuno sa Punso, Santelmo, Sarimanok, Sigbin, Tikbalang, Tyanak, White Lady |
 | Character designs | Initial designs finished |
 
 ## Art
 - **Tool:** ChatGPT image generation
 - **Target style:** Inspired by Hades 1/2
 - **Status:** Initial sprites were made in ChatGPT; they will be redone in the Hades-inspired style
+- **Uploads:** 25 originals sit in the repo's top folder (to move into `game/art/` during the art pass). Two styles: chibi stickers with transparency (8 heroes + all 8 Evil versions) and painterly concept sheets with backgrounds (Aswang forms, Bakunawa, Bungisngis, Santelmo, Sarimanok, Sigbin) that need redrawing
+- **In game now:** the 8 Evil sprites, shrunk to 192 px by `tools/import_enemy_art.py` into `art/enemies/`
 
 ## Technical
 | Item | Decision |
@@ -56,6 +59,7 @@
   1. `bash tools/run_tests.sh` - all tests must pass (also runs on GitHub on every push)
   2. `bash tools/take_screenshots.sh` - a bot plays a full run (unbeatable player), prints each room's time, and saves `screenshots/*.png`; look at them and report what they show
 - Gotcha: scripts run with `-s` can't compile anything that names autoloads (`RunState`, `SaveData`), and almost all game scripts do. So `-s` entry points stay tiny and load the real code one frame later: the test runner keeps tests untyped, and `tools/screenshots.gd` loads `tools/screenshot_bot.gd` deferred
+- Gotcha: don't `preload()` scenes whose scripts refer to Player/Enemy from Player/Enemy scripts (preload loop -> empty PackedScene at runtime). Use `load(path)` when needed instead
 - Add or update tests in `tests/` with every new feature
 - Claude can check logic and bugs; only Karl can judge fun, feel, and difficulty - flag those as open questions
 
@@ -67,7 +71,7 @@
 | `data/enemies/` | `EnemyData` script + one `.tres` per enemy type |
 | `data/upgrades/` | `UpgradeData` (adds `amount` to a stat by name) + `basic_upgrades.tres` pool |
 | `data/waves/` | `WaveData` / `WaveSet` scripts (rooms embed their own wave lists) |
-| `data/rooms/` | `RoomData` (size, waves, clear mode DEFEAT_ALL or SURVIVE) + one `.tres` per room; `boss_lair.tres` |
+| `data/rooms/` | `RoomData` (size, waves, clear mode DEFEAT_ALL or SURVIVE, min/max depth) + 7 rooms and `boss_lair.tres` |
 | `data/rewards/` | `RewardData` (UPGRADE, HEAL, BONUS_XP, BOON + deity) shown on doors, granted when the next room is cleared |
 | `data/deities/` | `DeityData` + `BoonData`; one `.tres` per deity (Apolaki, Mayari, Amanikable, Anitun Tabu), 3 boons each. Boon `effect` names map to code in `Shockwave`/`Enemy`/`Player`; all owned boons stack |
 | `data/runs/` | `RunData`: room pool, 6 rooms before boss, reward pool, +20% enemies per room, 2-3 doors |
@@ -75,7 +79,7 @@
 | `autoload/save_data.gd` | `SaveData` autoload: Diwa, shrine upgrade levels, runs/wins; JSON at `user://save.json` (tests use `user://test_save.json`, the bot `user://bot_save.json`) |
 | `data/meta/` | `MetaUpgradeData` (effect, amount per level, cost per level) + `shrine_upgrades.tres` (Tibay, Lakas, Bilis, Biyaya, Kapalaran, Pangalawang Buhay) |
 | `scenes/hub/` | `hub` (main scene, Kaluwalhatian): deity statues, Bathala's shrine (`ShrineMenu`, press E / gamepad A nearby), `RunGate` to start a run |
-| `scenes/enemies/` | Enemy scene (chases the player) and `WaveSpawner` (spawns just off-screen, capped at 300) |
+| `scenes/enemies/` | `Enemy` (behaviors from `EnemyData.behavior`: chase, leap, charge, ranged, spread, homing, teleport, vortex; plus split_into; every move has a wind-up telegraph), `EnemyProjectile`, `BakunawaBoss` (bite / moonfire rings / summon Tyanak, enraged below 50%), `WaveSpawner` (spawns just off-screen, capped at 300) |
 | `scenes/attacks/` | `Shockwave` (Tikbalang's stomp; `make_hit` adds boon effects, echo, undertow, lightning), `Hit` (damage + push + burn/slow/wall damage), `FirePatch` (Blazing Trail) |
 | `scenes/pickups/` | `XpOrb` (dropped by enemies, flies to the player within `pickup_radius`) and `DiwaGem` (extends XpOrb; adds to SaveData) |
 | `scenes/ui/` | HUD (XP bar top, level + room top-left, HP bar bottom-left, owned boons bottom-right, objective, banner) and `LevelUpMenu` (pauses; queues level-ups, Upgrade rewards and deity boon picks; never re-offers owned boons) |
@@ -94,7 +98,7 @@
 4. [x] Rooms: 6 rooms + boss per run, DEFEAT_ALL or SURVIVE clear rules, 2-3 reward doors, stats carry over, victory on boss clear
 5. [x] Boons: 4 Filipino deities x 3 boons, offered by boon doors; elements stack
 6. [x] Hub: Kaluwalhatian (realm of the gods), Bathala's shrine with 6 permanent upgrades, Diwa currency, saved progress
-7. [ ] Real enemies (corrupted folklore beings with distinct behaviors) + a real boss
+7. [x] Real enemies: Karl's 8 Evil creatures with distinct behaviors and sprites; Bakunawa boss
 8. [ ] Balance pass (run is easy and short)
 9. [ ] Start the 2D art pass (Hades-style sprites, lighting, particles)
 10. [ ] More playable characters (from Karl's finished designs)

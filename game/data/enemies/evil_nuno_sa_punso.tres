@@ -1,0 +1,27 @@
+[gd_resource type="Resource" script_class="EnemyData" format=3]
+
+[ext_resource type="Script" path="res://data/enemies/enemy_data.gd" id="1_data"]
+[ext_resource type="Texture2D" path="res://art/enemies/evil_nuno_sa_punso.png" id="2_sprite"]
+
+[resource]
+script = ExtResource("1_data")
+sprite = ExtResource("2_sprite")
+display_name = "Evil Nuno sa Punso"
+max_health = 40
+move_speed = 30.0
+contact_damage = 8
+radius = 18.0
+xp_value = 4
+knockback_resistance = 0.8
+diwa_chance = 0.12
+sprite_height = 56.0
+behavior = "homing"
+attack_range = 500.0
+attack_cooldown = 3.0
+windup_time = 0.5
+keep_distance = 200.0
+projectile_speed = 130.0
+projectile_damage = 7
+projectile_homing = 2.0
+projectile_lifetime = 5.0
+projectile_color = Color(0.65, 0.25, 0.9, 1)

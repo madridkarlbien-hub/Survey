@@ -1,0 +1,24 @@
+[gd_resource type="Resource" script_class="EnemyData" format=3]
+
+[ext_resource type="Script" path="res://data/enemies/enemy_data.gd" id="1_data"]
+[ext_resource type="Texture2D" path="res://art/enemies/evil_berberoka.png" id="2_sprite"]
+
+[resource]
+script = ExtResource("1_data")
+sprite = ExtResource("2_sprite")
+display_name = "Evil Berberoka"
+max_health = 35
+move_speed = 60.0
+contact_damage = 8
+radius = 15.0
+xp_value = 4
+knockback_resistance = 0.4
+diwa_chance = 0.12
+sprite_height = 54.0
+behavior = "vortex"
+attack_range = 400.0
+attack_cooldown = 5.0
+windup_time = 0.6
+action_time = 1.6
+keep_distance = 240.0
+pull_strength = 170.0

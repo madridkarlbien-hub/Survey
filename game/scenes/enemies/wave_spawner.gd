@@ -79,8 +79,10 @@ func _wave_count() -> int:
 func _spawn(enemy_data: EnemyData) -> void:
 	if get_tree().get_node_count_in_group("enemies") >= max_enemies:
 		return
-	var enemy: Enemy = enemy_scene.instantiate()
+	var scene: PackedScene = enemy_data.custom_scene if enemy_data.custom_scene else enemy_scene
+	var enemy: Enemy = scene.instantiate()
 	enemy.setup(enemy_data, _target)
+	enemy.play_area = _bounds
 	# Position it before adding, so it never appears at the room's center for a frame.
 	enemy.position = to_local(_pick_spawn_point())
 	add_child(enemy)

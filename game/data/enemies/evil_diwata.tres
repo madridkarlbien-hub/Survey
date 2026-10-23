@@ -1,0 +1,26 @@
+[gd_resource type="Resource" script_class="EnemyData" format=3]
+
+[ext_resource type="Script" path="res://data/enemies/enemy_data.gd" id="1_data"]
+[ext_resource type="Texture2D" path="res://art/enemies/evil_diwata.png" id="2_sprite"]
+
+[resource]
+script = ExtResource("1_data")
+sprite = ExtResource("2_sprite")
+display_name = "Evil Diwata"
+max_health = 25
+move_speed = 70.0
+contact_damage = 6
+radius = 13.0
+xp_value = 3
+diwa_chance = 0.1
+sprite_height = 52.0
+behavior = "spread"
+attack_range = 450.0
+attack_cooldown = 3.0
+windup_time = 0.5
+keep_distance = 300.0
+projectile_count = 5
+projectile_spread = 50.0
+projectile_speed = 200.0
+projectile_damage = 6
+projectile_color = Color(1, 0.4, 0.6, 1)

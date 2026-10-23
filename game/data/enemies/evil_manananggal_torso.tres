@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="EnemyData" format=3]
+
+[ext_resource type="Script" path="res://data/enemies/enemy_data.gd" id="1_data"]
+[ext_resource type="Texture2D" path="res://art/enemies/evil_manananggal.png" id="2_sprite"]
+
+[resource]
+script = ExtResource("1_data")
+sprite = ExtResource("2_sprite")
+display_name = "Evil Manananggal (torso)"
+max_health = 6
+move_speed = 190.0
+contact_damage = 6
+radius = 9.0
+xp_value = 1
+diwa_chance = 0.04
+sprite_height = 30.0

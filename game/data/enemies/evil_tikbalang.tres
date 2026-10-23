@@ -1,0 +1,23 @@
+[gd_resource type="Resource" script_class="EnemyData" format=3]
+
+[ext_resource type="Script" path="res://data/enemies/enemy_data.gd" id="1_data"]
+[ext_resource type="Texture2D" path="res://art/enemies/evil_tikbalang.png" id="2_sprite"]
+
+[resource]
+script = ExtResource("1_data")
+sprite = ExtResource("2_sprite")
+display_name = "Evil Tikbalang"
+max_health = 30
+move_speed = 90.0
+contact_damage = 12
+radius = 16.0
+xp_value = 3
+knockback_resistance = 0.3
+diwa_chance = 0.1
+sprite_height = 58.0
+behavior = "charge"
+attack_range = 360.0
+attack_cooldown = 3.0
+windup_time = 0.7
+action_time = 0.7
+action_speed = 560.0

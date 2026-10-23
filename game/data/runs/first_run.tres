@@ -3,7 +3,11 @@
 [ext_resource type="Script" path="res://data/runs/run_data.gd" id="1_run"]
 [ext_resource type="Script" path="res://data/rooms/room_data.gd" id="2_room"]
 [ext_resource type="Script" path="res://data/rewards/reward_data.gd" id="3_reward"]
-[ext_resource type="Resource" path="res://data/rooms/swarm_clearing.tres" id="4_swarm"]
+[ext_resource type="Resource" path="res://data/rooms/tyanak_nest.tres" id="4_swarm"]
+[ext_resource type="Resource" path="res://data/rooms/kapre_thicket.tres" id="15_thicket"]
+[ext_resource type="Resource" path="res://data/rooms/enchanted_spring.tres" id="16_spring"]
+[ext_resource type="Resource" path="res://data/rooms/cursed_mound.tres" id="17_mound"]
+[ext_resource type="Resource" path="res://data/rooms/balete_path.tres" id="18_balete"]
 [ext_resource type="Resource" path="res://data/rooms/haunted_grove.tres" id="5_grove"]
 [ext_resource type="Resource" path="res://data/rooms/narrow_pass.tres" id="6_pass"]
 [ext_resource type="Resource" path="res://data/rooms/boss_lair.tres" id="7_boss"]
@@ -17,7 +21,7 @@
 
 [resource]
 script = ExtResource("1_run")
-room_pool = Array[ExtResource("2_room")]([ExtResource("4_swarm"), ExtResource("5_grove"), ExtResource("6_pass")])
+room_pool = Array[ExtResource("2_room")]([ExtResource("4_swarm"), ExtResource("5_grove"), ExtResource("6_pass"), ExtResource("15_thicket"), ExtResource("16_spring"), ExtResource("17_mound"), ExtResource("18_balete")])
 rooms_before_boss = 6
 boss_room = ExtResource("7_boss")
 reward_pool = Array[ExtResource("3_reward")]([ExtResource("8_upgrade"), ExtResource("9_heal"), ExtResource("10_xp"), ExtResource("11_apolaki"), ExtResource("12_mayari"), ExtResource("13_amanikable"), ExtResource("14_anitun_tabu")])

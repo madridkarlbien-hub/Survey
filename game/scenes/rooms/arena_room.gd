@@ -44,6 +44,8 @@ var _time_in_room := 0.0
 @onready var _hp_text: Label = $HUD/HpBar/HpText
 @onready var _boon_label: Label = $HUD/Boons
 @onready var _diwa_label: Label = $HUD/Diwa
+@onready var _boss_bar: ProgressBar = $HUD/BossBar
+@onready var _boss_name: Label = $HUD/BossBar/BossName
 @onready var _objective_label: Label = $HUD/Objective
 @onready var _banner_label: Label = $HUD/Banner
 @onready var _level_up_menu: LevelUpMenu = $LevelUpMenu
@@ -88,8 +90,8 @@ func _clear_room() -> void:
 	state = State.CLEARED
 	_spawner.stop()
 	# In SURVIVE rooms, leftover enemies vanish. Orbs fly to the player.
-	for enemy in get_tree().get_nodes_in_group("enemies"):
-		enemy.queue_free()
+	for node in get_tree().get_nodes_in_group("enemies") + get_tree().get_nodes_in_group("enemy_projectiles"):
+		node.queue_free()
 	for orb: XpOrb in get_tree().get_nodes_in_group("xp_orbs"):
 		orb.attract()
 	_player.heal(int(SaveData.bonus("room_clear_heal")))
@@ -182,8 +184,22 @@ func _update_hud() -> void:
 	_hp_text.text = "HP %d / %d" % [_player.health, _player.character.max_health]
 	_stats_label.text = "Lv %d    Room %s" % [_player.level, _room_label]
 	_diwa_label.text = "Diwa %d" % SaveData.diwa
+	_update_boss_bar()
 	_boon_label.text = "\n".join(_player.boons.map(func(boon: BoonData) -> String: return boon.display_name))
 	_objective_label.text = _objective_text()
+
+
+func _update_boss_bar() -> void:
+	var boss: Enemy = null
+	for enemy: Enemy in get_tree().get_nodes_in_group("enemies"):
+		if enemy.data.show_health_bar:
+			boss = enemy
+			break
+	_boss_bar.visible = boss != null
+	if boss:
+		_boss_bar.max_value = boss.data.max_health
+		_boss_bar.value = maxf(boss.health, 0.0)
+		_boss_name.text = boss.data.display_name
 
 
 func _objective_text() -> String:

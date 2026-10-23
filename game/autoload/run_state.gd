@@ -97,8 +97,12 @@ func restore_player(player: Player) -> void:
 
 
 func _pick_room(avoid: RoomData) -> RoomData:
-	# Never the same room twice in a row, when there is a choice.
-	var options := run.room_pool.filter(func(room: RoomData) -> bool: return room != avoid)
+	# Only rooms allowed at this depth, and never the same room twice in a row.
+	var fits_depth := run.room_pool.filter(func(room: RoomData) -> bool:
+		return room.min_depth <= room_number and room_number <= room.max_depth)
+	if fits_depth.is_empty():
+		fits_depth = run.room_pool
+	var options := fits_depth.filter(func(room: RoomData) -> bool: return room != avoid)
 	if options.is_empty():
-		options = run.room_pool
+		options = fits_depth
 	return options.pick_random()

@@ -73,8 +73,10 @@ func kill_all_enemies() -> void:
 
 func spawn_enemy(room: Node, offset_from_player: Vector2, enemy_data: EnemyData = null) -> Enemy:
 	var player: Player = room.get_node("Player")
-	var enemy: Enemy = load(ENEMY_SCENE).instantiate()
-	enemy.setup(enemy_data if enemy_data else load(PLACEHOLDER_ENEMY), player)
+	var chosen: EnemyData = enemy_data if enemy_data else load(PLACEHOLDER_ENEMY)
+	var scene: PackedScene = chosen.custom_scene if chosen.custom_scene else load(ENEMY_SCENE)
+	var enemy: Enemy = scene.instantiate()
+	enemy.setup(chosen, player)
 	enemy.position = player.position + offset_from_player
 	room.get_node("WaveSpawner").add_child(enemy)
 	return enemy

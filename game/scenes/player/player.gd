@@ -14,7 +14,8 @@ const INVULNERABLE_TIME := 0.5
 const MIN_ATTACK_COOLDOWN := 0.3
 ## Seconds of safety after Second Life brings you back.
 const REVIVE_SAFE_TIME := 2.0
-const FIRE_PATCH_SCENE := preload("res://scenes/attacks/fire_patch.tscn")
+## Loaded when first needed; preloading would loop (FirePatch refers to Enemy).
+const FIRE_PATCH_SCENE_PATH := "res://scenes/attacks/fire_patch.tscn"
 ## Blazing Trail: seconds between fire patches while moving.
 const FIRE_PATCH_INTERVAL := 0.3
 
@@ -29,6 +30,8 @@ var kills := 0
 
 var _invulnerable_left := 0.0
 var _fire_patch_left := 0.0
+## Outside forces this frame (e.g. a Berberoka's whirlpool).
+var _pull := Vector2.ZERO
 
 @onready var _hurtbox: Area2D = $Hurtbox
 
@@ -42,7 +45,8 @@ func _ready() -> void:
 
 func _physics_process(delta: float) -> void:
 	var input := Input.get_vector("move_left", "move_right", "move_up", "move_down")
-	velocity = input * character.move_speed
+	velocity = input * character.move_speed + _pull
+	_pull = Vector2.ZERO
 	if input != Vector2.ZERO:
 		facing = input.normalized()
 		queue_redraw()
@@ -54,6 +58,19 @@ func _physics_process(delta: float) -> void:
 	modulate.a = 0.4 if _invulnerable_left > 0.0 else 1.0
 	if _invulnerable_left == 0.0:
 		_check_contact_damage()
+
+
+## Damage from attacks that respect the safety window (enemy projectiles).
+func try_damage(amount: int) -> bool:
+	if _invulnerable_left > 0.0 or health <= 0:
+		return false
+	take_damage(amount)
+	return true
+
+
+## Pull the player this frame (pixels per second).
+func pull(force: Vector2) -> void:
+	_pull += force
 
 
 func take_damage(amount: int) -> void:
@@ -139,7 +156,7 @@ func _drop_fire(delta: float) -> void:
 	if _fire_patch_left > 0.0:
 		return
 	_fire_patch_left = FIRE_PATCH_INTERVAL
-	var patch: FirePatch = FIRE_PATCH_SCENE.instantiate()
+	var patch: FirePatch = load(FIRE_PATCH_SCENE_PATH).instantiate()
 	patch.damage_per_second = trail.power
 	patch.lifetime = trail.duration
 	patch.position = position

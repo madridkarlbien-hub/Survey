@@ -89,7 +89,7 @@ func test_rooms_do_not_repeat_back_to_back() -> void:
 
 func test_deeper_rooms_spawn_more() -> void:
 	RunState.start_run()
-	RunState.current_room = load("res://data/rooms/swarm_clearing.tres")
+	RunState.current_room = load("res://data/rooms/tyanak_nest.tres")
 	check_eq(RunState.difficulty_multiplier(), 1.0, "room 1 multiplier")
 	RunState.room_number = 6
 	check(is_equal_approx(RunState.difficulty_multiplier(), 2.0), "room 6 should double enemy counts")
